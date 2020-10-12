@@ -2,10 +2,10 @@
 #include <string>
 
 extern "C" {
-#include "include/libavcodec/avcodec.h"
-#include "include/libavformat/avformat.h"
-#include "include/libavfilter/avfilter.h"
-#include "include/libavutil/avutil.h"
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavfilter/avfilter.h"
+#include "libavutil/avutil.h"
 #include "libavutil/timestamp.h"
 #include "libavutil/mathematics.h"
 #include "android_log.h"
