@@ -33,7 +33,7 @@ set_target_properties(libswresample PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURC
 add_library(libswscale SHARED IMPORTED)
 set_target_properties(libswscale PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libswscale.so)
 
-include_directories(./include)
+include_directories(.)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -46,6 +46,11 @@ add_library( # Sets the name of the library.
         # Sets the library as a shared library.
         SHARED
 
+        fftools_ffmpeg_opt.c
+        fftools_ffmpeg_filter.c
+        fftools_ffmpeg_hw.c
+        fftools_ffmpeg.c
+        fftools_cmdutils.c
         ffmpeg_info.cpp
         ffmpeg_remux.cpp)
 
