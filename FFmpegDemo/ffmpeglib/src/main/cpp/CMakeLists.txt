@@ -51,6 +51,7 @@ add_library( # Sets the name of the library.
         fftools_ffmpeg_hw.c
         fftools_ffmpeg.c
         fftools_cmdutils.c
+        ffmpeg_cmd.cpp
         ffmpeg_info.cpp
         ffmpeg_remux.cpp)
 

@@ -23,6 +23,7 @@
 
         <activity android:name=".FFmpegInfoActivity" />
         <activity android:name=".FFmpegRemuxActivity" />
+        <activity android:name=".FFmpegCmdActivity" />
     </application>
 
 </manifest>
