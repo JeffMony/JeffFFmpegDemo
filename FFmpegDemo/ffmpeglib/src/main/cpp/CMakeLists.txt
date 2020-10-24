@@ -53,7 +53,8 @@ add_library( # Sets the name of the library.
         fftools_cmdutils.c
         ffmpeg_cmd.cpp
         ffmpeg_info.cpp
-        ffmpeg_remux.cpp)
+        ffmpeg_remux.cpp
+        ffmpeg_videoinfo.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

@@ -19,5 +19,13 @@
         android:layout_gravity="center"
         android:layout_width="180dp"
         android:layout_height="50dp" />
+    
+    <Button
+        android:id="@+id/info_btn"
+        android:text="获取视频基本信息"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="180dp"
+        android:layout_height="50dp" />
 
 </LinearLayout>

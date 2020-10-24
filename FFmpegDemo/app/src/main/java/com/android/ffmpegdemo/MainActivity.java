@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   private Button mFFmpegInfoBtn;
   private Button mRemuxBtn;
+  private Button mVideoInfoBtn;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -20,9 +21,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     mFFmpegInfoBtn = findViewById(R.id.ffmpeg_info_btn);
     mRemuxBtn = findViewById(R.id.remux_btn);
+    mVideoInfoBtn = findViewById(R.id.info_btn);
 
     mFFmpegInfoBtn.setOnClickListener(this);
     mRemuxBtn.setOnClickListener(this);
+    mVideoInfoBtn.setOnClickListener(this);
   }
 
   @Override
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       startActivity(intent);
     } else if (v == mRemuxBtn) {
       Intent intent = new Intent(this, FFmpegRemuxActivity.class);
+      startActivity(intent);
+    } else if (v == mVideoInfoBtn) {
+      Intent intent = new Intent(this, FFmpegVideoInfoActivity.class);
       startActivity(intent);
     }
   }
