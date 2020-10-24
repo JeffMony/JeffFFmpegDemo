@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private Button mFFmpegInfoBtn;
   private Button mRemuxBtn;
   private Button mVideoInfoBtn;
+  private Button mFFmpegCmdBtn;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,23 +23,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     mFFmpegInfoBtn = findViewById(R.id.ffmpeg_info_btn);
     mRemuxBtn = findViewById(R.id.remux_btn);
     mVideoInfoBtn = findViewById(R.id.info_btn);
+    mFFmpegCmdBtn = findViewById(R.id.ffmpeg_cmd_btn);
 
     mFFmpegInfoBtn.setOnClickListener(this);
     mRemuxBtn.setOnClickListener(this);
     mVideoInfoBtn.setOnClickListener(this);
+    mFFmpegCmdBtn.setOnClickListener(this);
   }
 
   @Override
   public void onClick(View v) {
     if (v == mFFmpegInfoBtn) {
-      Intent intent = new Intent(this, FFmpegInfoActivity.class);
-      startActivity(intent);
+        Intent intent = new Intent(this, FFmpegInfoActivity.class);
+        startActivity(intent);
     } else if (v == mRemuxBtn) {
-      Intent intent = new Intent(this, FFmpegRemuxActivity.class);
-      startActivity(intent);
+        Intent intent = new Intent(this, FFmpegRemuxActivity.class);
+        startActivity(intent);
     } else if (v == mVideoInfoBtn) {
-      Intent intent = new Intent(this, FFmpegVideoInfoActivity.class);
-      startActivity(intent);
+        Intent intent = new Intent(this, FFmpegVideoInfoActivity.class);
+        startActivity(intent);
+    } else if (v == mFFmpegCmdBtn) {
+        Intent intent = new Intent(this, FFmpegCmdActivity.class);
+        startActivity(intent);
     }
   }
 }
