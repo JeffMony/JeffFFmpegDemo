@@ -44,7 +44,7 @@ public class FFmpegVideoInfoActivity extends AppCompatActivity {
                     LogUtils.w(TAG, "获取视频信息失败");
                     return;
                 }
-                LogUtils.i(TAG, "Width="+videoInfo.getWidth() +", Height="+videoInfo.getHeight() + ", duration=" +videoInfo.getDuration());
+                mInfoTxt.setText(videoInfo.toString());
             }
         });
     }

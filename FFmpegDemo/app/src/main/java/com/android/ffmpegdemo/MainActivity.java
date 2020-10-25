@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private Button mRemuxBtn;
   private Button mVideoInfoBtn;
   private Button mFFmpegCmdBtn;
-  private Button mVideoInfoBtn;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {

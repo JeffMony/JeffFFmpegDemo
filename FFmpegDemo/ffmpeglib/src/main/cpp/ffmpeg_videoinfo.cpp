@@ -31,9 +31,11 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoInfoUtils_getVideoInfo(JNIEnv *env, jclas
     AVFormatContext *ifmt_ctx = NULL;
     int ret;
     int i;
-    int video_index = -1;
+    int video_index = -1, audio_index = -1;
     int width, height;
     int64_t duration;
+    AVCodecID video_id = AV_CODEC_ID_NONE, audio_id = AV_CODEC_ID_NONE;
+    const AVCodec *video_codec, *audio_codec;
 
     if ((ret == avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
         LOGE("Could not open input file '%s'", in_filename);
@@ -57,6 +59,10 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoInfoUtils_getVideoInfo(JNIEnv *env, jclas
             video_index = i;
             width = in_codecpar->width;
             height = in_codecpar->height;
+            video_id = in_codecpar->codec_id;
+        } else if (in_codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+            audio_index = i;
+            audio_id = in_codecpar->codec_id;
         }
     }
 
@@ -65,7 +71,13 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoInfoUtils_getVideoInfo(JNIEnv *env, jclas
         return NULL;
     }
 
-    LOGE("duration=%lld, width=%d, height=%d", duration, width, height);
+    if (audio_index == -1) {
+        LOGE("Cannot find the audio track index");
+        return NULL;
+    }
+
+    video_codec = avcodec_find_decoder(video_id);
+    audio_codec = avcodec_find_decoder(audio_id);
 
     jclass objClass = env->FindClass("com/jeffmony/ffmpeglib/model/VideoInfo");
     jmethodID mid = env->GetMethodID(objClass, "<init>", "()V");
@@ -79,5 +91,29 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoInfoUtils_getVideoInfo(JNIEnv *env, jclas
 
     mid = env->GetMethodID(objClass, "setHeight", "(I)V");
     env->CallVoidMethod(constObj, mid, height);
+
+
+    mid = env->GetMethodID(objClass, "setVideoFormat", "(Ljava/lang/String;)V");
+    if (video_codec && video_codec->name) {
+        env->CallVoidMethod(constObj, mid, env->NewStringUTF(video_codec->name));
+    } else {
+        env->CallVoidMethod(constObj, mid, env->NewStringUTF(""));
+    }
+
+    mid = env->GetMethodID(objClass, "setAudioFormat", "(Ljava/lang/String;)V");
+    if (audio_codec && audio_codec->name) {
+        env->CallVoidMethod(constObj, mid, env->NewStringUTF(audio_codec->name));
+    } else {
+        env->CallVoidMethod(constObj, mid, env->NewStringUTF(""));
+    }
+
+    mid = env->GetMethodID(objClass, "setContainerFormat", "(Ljava/lang/String;)V");
+    if (ifmt_ctx->iformat && ifmt_ctx->iformat->name) {
+        env->CallVoidMethod(constObj, mid, env->NewStringUTF(ifmt_ctx->iformat->name));
+    } else {
+        env->CallVoidMethod(constObj, mid, env->NewStringUTF(""));
+    }
+
+    avformat_close_input(&ifmt_ctx);
     return constObj;
 }
