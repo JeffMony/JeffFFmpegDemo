@@ -9,7 +9,7 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.jeffmony.ffmpeglib.FFmpegRemuxUtils;
+import com.jeffmony.ffmpeglib.FFmpegVideoUtils;
 import com.jeffmony.ffmpeglib.LogUtils;
 
 import java.io.File;
@@ -57,7 +57,7 @@ public class FFmpegRemuxActivity extends AppCompatActivity implements View.OnCli
             }
         }
 
-        FFmpegRemuxUtils.remux(inputPath, outputPath);
+        FFmpegVideoUtils.remux(inputPath, outputPath);
     }
 
     @Override

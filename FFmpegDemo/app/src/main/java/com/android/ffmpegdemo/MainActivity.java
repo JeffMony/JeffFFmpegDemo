@@ -26,11 +26,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mVideoInfoBtn = findViewById(R.id.info_btn);
         mFFmpegCmdBtn = findViewById(R.id.ffmpeg_cmd_btn);
         mVideoInfoBtn = findViewById(R.id.info_btn);
+        mCutVideoBtn = findViewById(R.id.ffmpeg_cut_video_btn);
 
         mFFmpegInfoBtn.setOnClickListener(this);
         mRemuxBtn.setOnClickListener(this);
         mVideoInfoBtn.setOnClickListener(this);
         mFFmpegCmdBtn.setOnClickListener(this);
+        mCutVideoBtn.setOnClickListener(this);
     }
 
     @Override
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == mVideoInfoBtn) {
             Intent intent = new Intent(this, FFmpegVideoInfoActivity.class);
             startActivity(intent);
+        } else if (v == mCutVideoBtn) {
+
         }
     }
 }

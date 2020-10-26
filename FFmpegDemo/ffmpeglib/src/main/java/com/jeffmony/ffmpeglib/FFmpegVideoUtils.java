@@ -2,7 +2,7 @@ package com.jeffmony.ffmpeglib;
 
 import com.jeffmony.ffmpeglib.model.VideoInfo;
 
-public class FFmpegVideoInfoUtils {
+public class FFmpegVideoUtils {
 
     static {
         System.loadLibrary("jeffmony");
@@ -16,4 +16,6 @@ public class FFmpegVideoInfoUtils {
     }
 
     public static native VideoInfo getVideoInfo(String inputPath);
+
+    public static native int remux(String inputPath, String outputPath);
 }
