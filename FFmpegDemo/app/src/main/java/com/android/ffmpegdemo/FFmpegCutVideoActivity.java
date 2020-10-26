@@ -8,6 +8,7 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.jeffmony.ffmpeglib.FFmpegVideoUtils;
 import com.jeffmony.ffmpeglib.LogUtils;
 
 public class FFmpegCutVideoActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,15 +39,17 @@ public class FFmpegCutVideoActivity extends AppCompatActivity implements View.On
     private void doCutVideo() {
         String srcPath = mSrcPathTxt.getText().toString();
         String destPath = mDestPathTxt.getText().toString();
-        long start = 0;
-        long end = 0;
+        double start = 0;
+        double end = 0;
         try {
-            start = Long.parseLong(mStartTxt.getText().toString());
-            end = Long.parseLong(mEndTxt.getText().toString());
+            start = Double.parseDouble(mStartTxt.getText().toString());
+            end = Double.parseDouble(mEndTxt.getText().toString());
         } catch (Exception e) {
             LogUtils.w(TAG, "请输入正确的start-end 时间");
             return;
         }
+
+        FFmpegVideoUtils.cutVideo(start, end, srcPath, destPath);
 
     }
 

@@ -38,7 +38,7 @@
 
     <Button
         android:id="@+id/ffmpeg_cut_video_btn"
-        android:text="剪切视频"
+        android:text="截取一段视频"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:layout_width="180dp"

@@ -25,6 +25,7 @@
         <activity android:name=".FFmpegRemuxActivity" />
         <activity android:name=".FFmpegCmdActivity" />
         <activity android:name=".FFmpegVideoInfoActivity" />
+        <activity android:name=".FFmpegCutVideoActivity" />
     </application>
 
 </manifest>

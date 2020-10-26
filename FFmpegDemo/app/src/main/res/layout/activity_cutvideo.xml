@@ -30,7 +30,7 @@
         <Button
             android:id="@+id/video_cut_btn"
             android:layout_gravity="center"
-            android:text="剪切视频"
+            android:text="截取一段视频"
             android:layout_width="200dp"
             android:layout_height="wrap_content" />
 

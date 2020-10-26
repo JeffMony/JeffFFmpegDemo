@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, FFmpegVideoInfoActivity.class);
             startActivity(intent);
         } else if (v == mCutVideoBtn) {
-
+            Intent intent = new Intent(this, FFmpegCutVideoActivity.class);
+            startActivity(intent);
         }
     }
 }

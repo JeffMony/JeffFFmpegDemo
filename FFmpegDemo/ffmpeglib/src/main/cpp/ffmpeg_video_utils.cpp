@@ -11,6 +11,8 @@ extern "C" {
 #include "libavformat/avformat.h"
 #include "libavfilter/avfilter.h"
 #include "libavutil/avutil.h"
+#include "libavutil/mathematics.h"
+#include "libavutil/timestamp.h"
 #include "android_log.h"
 }
 
@@ -281,5 +283,173 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
         avio_closep(&ofmt_ctx->pb);
     avformat_free_context(ofmt_ctx);
     av_freep(&stream_mapping);
+    return 1;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_cutVideo(JNIEnv *env, jclass clazz, jdouble start,
+                                                      jdouble end, jstring input_path,
+                                                      jstring output_path) {
+    if (use_log_report) {
+        av_log_set_callback(ffp_log_callback_report);
+    } else {
+        av_log_set_callback(ffp_log_callback_brief);
+    }
+    const char *in_filename = env->GetStringUTFChars(input_path, 0);
+    const char *out_filename = env->GetStringUTFChars(output_path, 0);
+    double start_s = start;
+    double end_s = end;
+
+    AVFormatContext *ifmt_ctx = NULL, *ofmt_ctx = NULL;
+    AVOutputFormat *ofmt = NULL;
+    AVPacket pkt;
+
+    int ret;
+    int i;
+
+    if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
+        LOGE("Cannot open input file");
+        avformat_close_input(&ifmt_ctx);
+        return ret;
+    }
+
+    if ((ret = avformat_find_stream_info(ifmt_ctx, NULL)) < 0) {
+        LOGE("Cannot find input file stream info");
+        avformat_close_input(&ifmt_ctx);
+        return ret;
+    }
+
+    avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, out_filename);
+
+    if (!ofmt_ctx) {
+        LOGE("Cannot alloc output file ctx");
+        avformat_close_input(&ifmt_ctx);
+        return AVERROR_UNKNOWN;
+    }
+
+    ofmt = ofmt_ctx->oformat;
+
+    for (i = 0; i < ifmt_ctx->nb_streams; i++) {
+        AVStream *in_stream = ifmt_ctx->streams[i];
+        AVStream *out_stream = avformat_new_stream(ofmt_ctx, NULL);
+        if (!out_stream) {
+            LOGE("Failed allocating output stream");
+            avformat_close_input(&ifmt_ctx);
+            avformat_free_context(ofmt_ctx);
+            return AVERROR_UNKNOWN;
+        }
+
+        ret = avcodec_parameters_copy(out_stream->codecpar, in_stream->codecpar);
+        if (ret < 0) {
+            LOGE("Failed to copy context from input to output stream codec context");
+            avformat_close_input(&ifmt_ctx);
+            avformat_free_context(ofmt_ctx);
+            return ret;
+        }
+        out_stream->codecpar->codec_tag = 0;
+    }
+    if (!(ofmt->flags & AVFMT_NOFILE)) {
+        ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
+        if (ret < 0) {
+            LOGE("Could not open output file '%s'", out_filename);
+            avformat_close_input(&ifmt_ctx);
+            avformat_free_context(ofmt_ctx);
+            return ret;
+        }
+    }
+
+    ret = avformat_write_header(ofmt_ctx, NULL);
+    if (ret < 0) {
+        LOGE("Error occurred when opening output file");
+        avformat_close_input(&ifmt_ctx);
+        avformat_free_context(ofmt_ctx);
+        return ret;
+    }
+
+    ret = av_seek_frame(ifmt_ctx, -1, start_s * AV_TIME_BASE, AVSEEK_FLAG_ANY);
+    if (ret < 0) {
+        LOGE("Error seek");
+        avformat_close_input(&ifmt_ctx);
+        avformat_free_context(ofmt_ctx);
+        return ret;
+    }
+
+    int64_t *dts_start_from = static_cast<int64_t *>(malloc(
+            sizeof(int64_t) * ifmt_ctx->nb_streams));
+    memset(dts_start_from, 0, sizeof(int64_t) * ifmt_ctx->nb_streams);
+    int64_t *pts_start_from = static_cast<int64_t *>(malloc(
+            sizeof(int64_t) * ifmt_ctx->nb_streams));
+    memset(pts_start_from, 0, sizeof(int64_t) * ifmt_ctx->nb_streams);
+
+
+    while (1) {
+        AVStream *in_stream, *out_stream;
+
+        ret = av_read_frame(ifmt_ctx, &pkt);
+        if (ret < 0) {
+            avformat_close_input(&ifmt_ctx);
+
+            if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
+                avio_closep(&ofmt_ctx->pb);
+            avformat_free_context(ofmt_ctx);
+
+            break;
+        }
+        in_stream  = ifmt_ctx->streams[pkt.stream_index];
+        out_stream = ofmt_ctx->streams[pkt.stream_index];
+
+        if (av_q2d(in_stream->time_base) * pkt.pts > end_s) {
+            av_packet_unref(&pkt);
+            break;
+        }
+
+        if (dts_start_from[pkt.stream_index] == 0) {
+            dts_start_from[pkt.stream_index] = pkt.dts;
+            LOGE("dts_start_from: %s\n", av_ts2str(dts_start_from[pkt.stream_index]));
+        }
+        if (pts_start_from[pkt.stream_index] == 0) {
+            pts_start_from[pkt.stream_index] = pkt.pts;
+            LOGE("pts_start_from: %s\n", av_ts2str(pts_start_from[pkt.stream_index]));
+        }
+
+        /* copy packet */
+        pkt.pts = av_rescale_q_rnd(pkt.pts - pts_start_from[pkt.stream_index], in_stream->time_base, out_stream->time_base,
+                                   static_cast<AVRounding>(AV_ROUND_NEAR_INF |
+                                                           AV_ROUND_PASS_MINMAX));
+        pkt.dts = av_rescale_q_rnd(pkt.dts - dts_start_from[pkt.stream_index], in_stream->time_base, out_stream->time_base,
+                                   static_cast<AVRounding>(AV_ROUND_NEAR_INF |
+                                                           AV_ROUND_PASS_MINMAX));
+        if (pkt.pts < 0) {
+            pkt.pts = 0;
+        }
+        if (pkt.dts < 0) {
+            pkt.dts = 0;
+        }
+        pkt.duration = (int)av_rescale_q((int64_t)pkt.duration, in_stream->time_base, out_stream->time_base);
+        pkt.pos = -1;
+
+        ret = av_interleaved_write_frame(ofmt_ctx, &pkt);
+        if (ret < 0) {
+            LOGE("Error muxing packet");
+            avformat_close_input(&ifmt_ctx);
+
+            if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
+                avio_closep(&ofmt_ctx->pb);
+            avformat_free_context(ofmt_ctx);
+            break;
+        }
+        av_packet_unref(&pkt);
+    }
+    free(dts_start_from);
+    free(pts_start_from);
+
+    av_write_trailer(ofmt_ctx);
+
+    avformat_close_input(&ifmt_ctx);
+
+    if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
+        avio_closep(&ofmt_ctx->pb);
+    avformat_free_context(ofmt_ctx);
     return 1;
 }

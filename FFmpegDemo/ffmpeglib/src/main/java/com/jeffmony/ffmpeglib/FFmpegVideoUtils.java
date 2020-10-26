@@ -18,4 +18,6 @@ public class FFmpegVideoUtils {
     public static native VideoInfo getVideoInfo(String inputPath);
 
     public static native int remux(String inputPath, String outputPath);
+
+    public static native int cutVideo(double start, double end, String inputPath, String outputPath);
 }
