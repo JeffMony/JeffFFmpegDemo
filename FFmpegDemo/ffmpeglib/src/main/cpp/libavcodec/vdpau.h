@@ -104,6 +104,7 @@ typedef struct AVVDPAUContext {
 AVVDPAUContext *av_alloc_vdpaucontext(void);
 
 AVVDPAU_Render2 av_vdpau_hwaccel_get_render2(const AVVDPAUContext *);
+
 void av_vdpau_hwaccel_set_render2(AVVDPAUContext *, AVVDPAU_Render2);
 
 /**
@@ -154,6 +155,7 @@ int av_vdpau_get_surface_parameters(AVCodecContext *avctx, VdpChromaType *type,
 AVVDPAUContext *av_vdpau_alloc_context(void);
 
 #if FF_API_VDPAU_PROFILE
+
 /**
  * Get a decoder profile that should be used for initializing a VDPAU decoder.
  * Should be called from the AVCodecContext.get_format() callback.
@@ -169,6 +171,7 @@ AVVDPAUContext *av_vdpau_alloc_context(void);
  */
 attribute_deprecated
 int av_vdpau_get_profile(AVCodecContext *avctx, VdpDecoderProfile *profile);
+
 #endif
 
 /* @}*/

@@ -48,7 +48,7 @@ typedef struct AVDXVA2FramesContext {
      * The surface type (e.g. DXVA2_VideoProcessorRenderTarget or
      * DXVA2_VideoDecoderRenderTarget). Must be set by the caller.
      */
-    DWORD               surface_type;
+    DWORD surface_type;
 
     /**
      * The surface pool. When an external pool is not provided by the caller,
@@ -56,7 +56,7 @@ typedef struct AVDXVA2FramesContext {
      * libavutil.
      */
     IDirect3DSurface9 **surfaces;
-    int              nb_surfaces;
+    int nb_surfaces;
 
     /**
      * Certain drivers require the decoder to be destroyed before the surfaces.

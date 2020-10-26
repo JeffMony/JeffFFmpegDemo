@@ -71,6 +71,7 @@ void init_dynload(void);
  * allocate the *_opts contexts.
  */
 void init_opts(void);
+
 /**
  * Uninitialize the cmdutils option system, in particular
  * free the *_opts contexts and their contents.
@@ -81,7 +82,7 @@ void uninit_opts(void);
  * Trivial log callback.
  * Only suitable for opt_help and similar since it lacks prefix handling.
  */
-void log_callback_help(void* ptr, int level, const char* fmt, va_list vl);
+void log_callback_help(void *ptr, int level, const char *fmt, va_list vl);
 
 /**
  * Override the cpuflags.
@@ -147,11 +148,11 @@ typedef struct SpecifierOpt {
     char *specifier;    /**< stream/chapter/program/... specifier */
     union {
         uint8_t *str;
-        int        i;
-        int64_t  i64;
+        int i;
+        int64_t i64;
         uint64_t ui64;
-        float      f;
-        double   dbl;
+        float f;
+        double dbl;
     } u;
 } SpecifierOpt;
 
@@ -180,11 +181,15 @@ typedef struct OptionDef {
 #define OPT_DOUBLE 0x20000
 #define OPT_INPUT  0x40000
 #define OPT_OUTPUT 0x80000
+
     union {
         void *dst_ptr;
+
         int (*func_arg)(void *, const char *, const char *);
+
         size_t off;
     } u;
+
     const char *help;
     const char *argname;
 } OptionDef;
@@ -242,6 +247,7 @@ void show_help_options(const OptionDef *options, const char *msg, int req_flags,
     { "hide_banner", OPT_BOOL | OPT_EXPERT, {&hide_banner},     "do not show program banner", "hide_banner" },          \
     CMDUTILS_COMMON_OPTIONS_AVDEVICE                                                                                    \
 
+
 /**
  * Show help for all options with given flags in class and all its
  * children.
@@ -272,7 +278,7 @@ int show_help(void *optctx, const char *opt, const char *arg);
  * not have to be processed.
  */
 void parse_options(void *optctx, int argc, char **argv, const OptionDef *options,
-                   void (* parse_arg_function)(void *optctx, const char*));
+                   void (*parse_arg_function)(void *optctx, const char *));
 
 /**
  * Parse one given option.
@@ -288,9 +294,9 @@ int parse_option(void *optctx, const char *opt, const char *arg,
  * used multiple times.
  */
 typedef struct Option {
-    const OptionDef  *opt;
-    const char       *key;
-    const char       *val;
+    const OptionDef *opt;
+    const char *key;
+    const char *val;
 } Option;
 
 typedef struct OptionGroupDef {
@@ -313,7 +319,7 @@ typedef struct OptionGroup {
     const char *arg;
 
     Option *opts;
-    int  nb_opts;
+    int nb_opts;
 
     AVDictionary *codec_opts;
     AVDictionary *format_opts;
@@ -330,14 +336,14 @@ typedef struct OptionGroupList {
     const OptionGroupDef *group_def;
 
     OptionGroup *groups;
-    int       nb_groups;
+    int nb_groups;
 } OptionGroupList;
 
 typedef struct OptionParseContext {
     OptionGroup global_opts;
 
     OptionGroupList *groups;
-    int           nb_groups;
+    int nb_groups;
 
     /* parsing state */
     OptionGroup cur_group;

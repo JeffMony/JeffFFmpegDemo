@@ -21,7 +21,9 @@
 #define AVUTIL_HWCONTEXT_CUDA_H
 
 #ifndef CUDA_VERSION
+
 #include <cuda.h>
+
 #endif
 
 #include "pixfmt.h"

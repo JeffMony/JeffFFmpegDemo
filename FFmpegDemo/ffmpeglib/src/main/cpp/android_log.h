@@ -1,4 +1,5 @@
 #include <android/log.h>
+
 static int use_log_report = 0;
 
 #define FF_LOG_TAG     "FFmpeg_JeffMony"
@@ -19,8 +20,7 @@ static int use_log_report = 0;
 
 
 // 原样输出FFmpeg日志
-static void ffp_log_callback_brief(void *ptr, int level, const char *fmt, va_list vl)
-{
+static void ffp_log_callback_brief(void *ptr, int level, const char *fmt, va_list vl) {
     int ffplv = FF_LOG_VERBOSE;
     if (level <= AV_LOG_ERROR)
         ffplv = FF_LOG_ERROR;
@@ -38,8 +38,7 @@ static void ffp_log_callback_brief(void *ptr, int level, const char *fmt, va_lis
 }
 
 // 对FFmpeg日志进行格式化
-static void ffp_log_callback_report(void *ptr, int level, const char *fmt, va_list vl)
-{
+static void ffp_log_callback_report(void *ptr, int level, const char *fmt, va_list vl) {
     int ffplv = FF_LOG_VERBOSE;
     if (level <= AV_LOG_ERROR)
         ffplv = FF_LOG_ERROR;

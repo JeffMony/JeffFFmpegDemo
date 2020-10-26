@@ -95,7 +95,7 @@ typedef struct AVD3D11VAContext {
     /**
       * Mutex to access video_context
       */
-    HANDLE  context_mutex;
+    HANDLE context_mutex;
 } AVD3D11VAContext;
 
 /**

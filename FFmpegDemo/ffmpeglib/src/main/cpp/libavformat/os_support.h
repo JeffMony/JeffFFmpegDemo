@@ -59,16 +59,17 @@
 
 #ifdef __ANDROID__
 #  if HAVE_UNISTD_H
+
 #    include <unistd.h>
+
 #  endif
 #  ifdef lseek
 #   undef lseek
 #  endif
-#  define lseek(f,p,w) lseek64((f), (p), (w))
+#  define lseek(f, p, w) lseek64((f), (p), (w))
 #endif
 
-static inline int is_dos_path(const char *path)
-{
+static inline int is_dos_path(const char *path) {
 #if HAVE_DOS_PATHS
     if (path[0] && path[1] == ':')
         return 1;

@@ -80,11 +80,11 @@ typedef struct name { \
  */
 
 FF_PAD_STRUCTURE(AVBPrint, 1024,
-    char *str;         /**< string so far */
-    unsigned len;      /**< length so far */
-    unsigned size;     /**< allocated memory */
-    unsigned size_max; /**< maximum allocated memory */
-    char reserved_internal_buffer[1];
+                 char *str;         /**< string so far */
+                         unsigned len;      /**< length so far */
+                         unsigned size;     /**< allocated memory */
+                         unsigned size_max; /**< maximum allocated memory */
+                         char reserved_internal_buffer[1];
 )
 
 /**
@@ -146,6 +146,7 @@ void av_bprint_chars(AVBPrint *buf, char c, unsigned n);
 void av_bprint_append_data(AVBPrint *buf, const char *data, unsigned size);
 
 struct tm;
+
 /**
  * Append a formatted date and time to a print buffer.
  *
@@ -182,8 +183,7 @@ void av_bprint_clear(AVBPrint *buf);
  * It may have been truncated due to a memory allocation failure
  * or the size_max limit (compare size and size_max if necessary).
  */
-static inline int av_bprint_is_complete(const AVBPrint *buf)
-{
+static inline int av_bprint_is_complete(const AVBPrint *buf) {
     return buf->len < buf->size;
 }
 

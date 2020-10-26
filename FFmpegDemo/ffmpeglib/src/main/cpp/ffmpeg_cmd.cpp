@@ -12,12 +12,9 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_com_jeffmony_ffmpeglib_FFmpegCmdUtils_ffmpegExecute(JNIEnv *env, jclass clazz,
                                                          jobjectArray cmds) {
-    if(use_log_report)
-    {
+    if (use_log_report) {
         av_log_set_callback(ffp_log_callback_report);
-    }
-    else
-    {
+    } else {
         av_log_set_callback(ffp_log_callback_brief);
     }
     jstring *tempArray = NULL;
@@ -28,7 +25,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegCmdUtils_ffmpegExecute(JNIEnv *env, jclass cla
         argc = programArgumentCount;
         tempArray = (jstring *) av_malloc(sizeof(jstring) * programArgumentCount);
     }
-    argv = (char **)av_malloc(sizeof(char*) * (argc));
+    argv = (char **) av_malloc(sizeof(char *) * (argc));
     if (cmds != NULL) {
         for (int i = 0; i < argc; i++) {
             tempArray[i] = (jstring) (*env).GetObjectArrayElement(cmds, i);

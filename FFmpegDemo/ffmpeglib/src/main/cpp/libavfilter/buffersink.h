@@ -106,20 +106,27 @@ void av_buffersink_set_frame_size(AVFilterContext *ctx, unsigned frame_size);
  * @{
  */
 
-enum AVMediaType av_buffersink_get_type                (const AVFilterContext *ctx);
-AVRational       av_buffersink_get_time_base           (const AVFilterContext *ctx);
-int              av_buffersink_get_format              (const AVFilterContext *ctx);
+enum AVMediaType av_buffersink_get_type(const AVFilterContext *ctx);
 
-AVRational       av_buffersink_get_frame_rate          (const AVFilterContext *ctx);
-int              av_buffersink_get_w                   (const AVFilterContext *ctx);
-int              av_buffersink_get_h                   (const AVFilterContext *ctx);
-AVRational       av_buffersink_get_sample_aspect_ratio (const AVFilterContext *ctx);
+AVRational av_buffersink_get_time_base(const AVFilterContext *ctx);
 
-int              av_buffersink_get_channels            (const AVFilterContext *ctx);
-uint64_t         av_buffersink_get_channel_layout      (const AVFilterContext *ctx);
-int              av_buffersink_get_sample_rate         (const AVFilterContext *ctx);
+int av_buffersink_get_format(const AVFilterContext *ctx);
 
-AVBufferRef *    av_buffersink_get_hw_frames_ctx       (const AVFilterContext *ctx);
+AVRational av_buffersink_get_frame_rate(const AVFilterContext *ctx);
+
+int av_buffersink_get_w(const AVFilterContext *ctx);
+
+int av_buffersink_get_h(const AVFilterContext *ctx);
+
+AVRational av_buffersink_get_sample_aspect_ratio(const AVFilterContext *ctx);
+
+int av_buffersink_get_channels(const AVFilterContext *ctx);
+
+uint64_t av_buffersink_get_channel_layout(const AVFilterContext *ctx);
+
+int av_buffersink_get_sample_rate(const AVFilterContext *ctx);
+
+AVBufferRef *av_buffersink_get_hw_frames_ctx(const AVFilterContext *ctx);
 
 /** @} */
 

@@ -40,10 +40,9 @@
  * @param ts the timestamp to represent
  * @return the buffer in input
  */
-static inline char *av_ts_make_string(char *buf, int64_t ts)
-{
+static inline char *av_ts_make_string(char *buf, int64_t ts) {
     if (ts == AV_NOPTS_VALUE) snprintf(buf, AV_TS_MAX_STRING_SIZE, "NOPTS");
-    else                      snprintf(buf, AV_TS_MAX_STRING_SIZE, "%" PRId64, ts);
+    else snprintf(buf, AV_TS_MAX_STRING_SIZE, "%" PRId64, ts);
     return buf;
 }
 
@@ -62,10 +61,9 @@ static inline char *av_ts_make_string(char *buf, int64_t ts)
  * @param tb the timebase of the timestamp
  * @return the buffer in input
  */
-static inline char *av_ts_make_time_string(char *buf, int64_t ts, AVRational *tb)
-{
+static inline char *av_ts_make_time_string(char *buf, int64_t ts, AVRational *tb) {
     if (ts == AV_NOPTS_VALUE) snprintf(buf, AV_TS_MAX_STRING_SIZE, "NOPTS");
-    else                      snprintf(buf, AV_TS_MAX_STRING_SIZE, "%.6g", av_q2d(*tb) * ts);
+    else snprintf(buf, AV_TS_MAX_STRING_SIZE, "%.6g", av_q2d(*tb) * ts);
     return buf;
 }
 

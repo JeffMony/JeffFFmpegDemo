@@ -77,10 +77,10 @@
  * Rounding methods.
  */
 enum AVRounding {
-    AV_ROUND_ZERO     = 0, ///< Round toward zero.
-    AV_ROUND_INF      = 1, ///< Round away from zero.
-    AV_ROUND_DOWN     = 2, ///< Round toward -infinity.
-    AV_ROUND_UP       = 3, ///< Round toward +infinity.
+    AV_ROUND_ZERO = 0, ///< Round toward zero.
+    AV_ROUND_INF = 1, ///< Round away from zero.
+    AV_ROUND_DOWN = 2, ///< Round toward -infinity.
+    AV_ROUND_UP = 3, ///< Round toward +infinity.
     AV_ROUND_NEAR_INF = 5, ///< Round to nearest and halfway cases away from zero.
     /**
      * Flag telling rescaling functions to pass `INT64_MIN`/`MAX` through
@@ -219,7 +219,9 @@ int64_t av_compare_mod(uint64_t a, uint64_t b, uint64_t mod);
  * @note In the context of this function, "duration" is in term of samples, not
  *       seconds.
  */
-int64_t av_rescale_delta(AVRational in_tb, int64_t in_ts,  AVRational fs_tb, int duration, int64_t *last, AVRational out_tb);
+int64_t
+av_rescale_delta(AVRational in_tb, int64_t in_ts, AVRational fs_tb, int duration, int64_t *last,
+                 AVRational out_tb);
 
 /**
  * Add a value to a timestamp.

@@ -52,7 +52,7 @@ public class FFmpegRemuxActivity extends AppCompatActivity implements View.OnCli
             try {
                 outputFile.createNewFile();
             } catch (Exception e) {
-                LogUtils.w(TAG, "Create file failed, exception = " +e);
+                LogUtils.w(TAG, "Create file failed, exception = " + e);
                 return;
             }
         }

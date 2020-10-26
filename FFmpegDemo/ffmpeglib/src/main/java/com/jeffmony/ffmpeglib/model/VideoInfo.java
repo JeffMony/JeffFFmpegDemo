@@ -63,9 +63,9 @@ public class VideoInfo {
     }
 
     public String toString() {
-        return "VideoInfo[Width="+mWidth+", Height="+mHeight+
-                ", Duration="+mDuration+", Video="+mVideoFormat+
-                ", Audio="+mAudioFormat+", Container="+mContainerFormat+"]";
+        return "VideoInfo[Width=" + mWidth + ", Height=" + mHeight +
+                ", Duration=" + mDuration + ", Video=" + mVideoFormat +
+                ", Audio=" + mAudioFormat + ", Container=" + mContainerFormat + "]";
     }
 
 }

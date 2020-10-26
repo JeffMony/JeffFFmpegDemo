@@ -153,7 +153,7 @@ uint64_t av_get_channel_layout(const char *name);
  *
  * @return 0 on success, AVERROR(EINVAL) if the parsing fails.
  */
-int av_get_extended_channel_layout(const char *name, uint64_t* channel_layout, int* nb_channels);
+int av_get_extended_channel_layout(const char *name, uint64_t *channel_layout, int *nb_channels);
 
 /**
  * Return a description of a channel layout.
@@ -162,9 +162,11 @@ int av_get_extended_channel_layout(const char *name, uint64_t* channel_layout, i
  * @param buf put here the string containing the channel layout
  * @param buf_size size in bytes of the buffer
  */
-void av_get_channel_layout_string(char *buf, int buf_size, int nb_channels, uint64_t channel_layout);
+void
+av_get_channel_layout_string(char *buf, int buf_size, int nb_channels, uint64_t channel_layout);
 
 struct AVBPrint;
+
 /**
  * Append a description of a channel layout to a bprint buffer.
  */

@@ -51,17 +51,17 @@
 #endif
 
 //rounded division & shift
-#define RSHIFT(a,b) ((a) > 0 ? ((a) + ((1<<(b))>>1))>>(b) : ((a) + ((1<<(b))>>1)-1)>>(b))
+#define RSHIFT(a, b) ((a) > 0 ? ((a) + ((1<<(b))>>1))>>(b) : ((a) + ((1<<(b))>>1)-1)>>(b))
 /* assume b>0 */
-#define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
+#define ROUNDED_DIV(a, b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
 /* Fast a/(1<<b) rounded toward +inf. Assume a>=0 and b>=0 */
-#define AV_CEIL_RSHIFT(a,b) (!av_builtin_constant_p(b) ? -((-(a)) >> (b)) \
+#define AV_CEIL_RSHIFT(a, b) (!av_builtin_constant_p(b) ? -((-(a)) >> (b)) \
                                                        : ((a) + (1<<(b)) - 1) >> (b))
 /* Backwards compat. */
 #define FF_CEIL_RSHIFT AV_CEIL_RSHIFT
 
-#define FFUDIV(a,b) (((a)>0 ?(a):(a)-(b)+1) / (b))
-#define FFUMOD(a,b) ((a)-(b)*FFUDIV(a,b))
+#define FFUDIV(a, b) (((a)>0 ?(a):(a)-(b)+1) / (b))
+#define FFUMOD(a, b) ((a)-(b)*FFUDIV(a,b))
 
 /**
  * Absolute value, Note, INT_MIN / INT64_MIN result in undefined behavior as they
@@ -89,14 +89,14 @@
  * As with many macros, this evaluates its argument multiple times, it thus
  * must not have a side-effect.
  */
-#define FFDIFFSIGN(x,y) (((x)>(y)) - ((x)<(y)))
+#define FFDIFFSIGN(x, y) (((x)>(y)) - ((x)<(y)))
 
-#define FFMAX(a,b) ((a) > (b) ? (a) : (b))
-#define FFMAX3(a,b,c) FFMAX(FFMAX(a,b),c)
-#define FFMIN(a,b) ((a) > (b) ? (b) : (a))
-#define FFMIN3(a,b,c) FFMIN(FFMIN(a,b),c)
+#define FFMAX(a, b) ((a) > (b) ? (a) : (b))
+#define FFMAX3(a, b, c) FFMAX(FFMAX(a,b),c)
+#define FFMIN(a, b) ((a) > (b) ? (b) : (a))
+#define FFMIN3(a, b, c) FFMIN(FFMIN(a,b),c)
 
-#define FFSWAP(type,a,b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
+#define FFSWAP(type, a, b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
 #define FF_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
 
 /* misc math functions */
@@ -110,11 +110,15 @@
 #include "common.h"
 
 #ifndef av_log2
+
 av_const int av_log2(unsigned v);
+
 #endif
 
 #ifndef av_log2_16bit
+
 av_const int av_log2_16bit(unsigned v);
+
 #endif
 
 /**
@@ -124,14 +128,13 @@ av_const int av_log2_16bit(unsigned v);
  * @param amax maximum value of the clip range
  * @return clipped value
  */
-static av_always_inline av_const int av_clip_c(int a, int amin, int amax)
-{
+static av_always_inline av_const int av_clip_c(int a, int amin, int amax) {
 #if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
     if (amin > amax) abort();
 #endif
-    if      (a < amin) return amin;
+    if (a < amin) return amin;
     else if (a > amax) return amax;
-    else               return a;
+    else return a;
 }
 
 /**
@@ -141,14 +144,13 @@ static av_always_inline av_const int av_clip_c(int a, int amin, int amax)
  * @param amax maximum value of the clip range
  * @return clipped value
  */
-static av_always_inline av_const int64_t av_clip64_c(int64_t a, int64_t amin, int64_t amax)
-{
+static av_always_inline av_const int64_t av_clip64_c(int64_t a, int64_t amin, int64_t amax) {
 #if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
     if (amin > amax) abort();
 #endif
-    if      (a < amin) return amin;
+    if (a < amin) return amin;
     else if (a > amax) return amax;
-    else               return a;
+    else return a;
 }
 
 /**
@@ -156,10 +158,9 @@ static av_always_inline av_const int64_t av_clip64_c(int64_t a, int64_t amin, in
  * @param a value to clip
  * @return clipped value
  */
-static av_always_inline av_const uint8_t av_clip_uint8_c(int a)
-{
-    if (a&(~0xFF)) return (~a)>>31;
-    else           return a;
+static av_always_inline av_const uint8_t av_clip_uint8_c(int a) {
+    if (a & (~0xFF)) return (~a) >> 31;
+    else return a;
 }
 
 /**
@@ -167,10 +168,9 @@ static av_always_inline av_const uint8_t av_clip_uint8_c(int a)
  * @param a value to clip
  * @return clipped value
  */
-static av_always_inline av_const int8_t av_clip_int8_c(int a)
-{
-    if ((a+0x80U) & ~0xFF) return (a>>31) ^ 0x7F;
-    else                  return a;
+static av_always_inline av_const int8_t av_clip_int8_c(int a) {
+    if ((a + 0x80U) & ~0xFF) return (a >> 31) ^ 0x7F;
+    else return a;
 }
 
 /**
@@ -178,10 +178,9 @@ static av_always_inline av_const int8_t av_clip_int8_c(int a)
  * @param a value to clip
  * @return clipped value
  */
-static av_always_inline av_const uint16_t av_clip_uint16_c(int a)
-{
-    if (a&(~0xFFFF)) return (~a)>>31;
-    else             return a;
+static av_always_inline av_const uint16_t av_clip_uint16_c(int a) {
+    if (a & (~0xFFFF)) return (~a) >> 31;
+    else return a;
 }
 
 /**
@@ -189,10 +188,9 @@ static av_always_inline av_const uint16_t av_clip_uint16_c(int a)
  * @param a value to clip
  * @return clipped value
  */
-static av_always_inline av_const int16_t av_clip_int16_c(int a)
-{
-    if ((a+0x8000U) & ~0xFFFF) return (a>>31) ^ 0x7FFF;
-    else                      return a;
+static av_always_inline av_const int16_t av_clip_int16_c(int a) {
+    if ((a + 0x8000U) & ~0xFFFF) return (a >> 31) ^ 0x7FFF;
+    else return a;
 }
 
 /**
@@ -200,10 +198,9 @@ static av_always_inline av_const int16_t av_clip_int16_c(int a)
  * @param a value to clip
  * @return clipped value
  */
-static av_always_inline av_const int32_t av_clipl_int32_c(int64_t a)
-{
-    if ((a+0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (int32_t)((a>>63) ^ 0x7FFFFFFF);
-    else                                         return (int32_t)a;
+static av_always_inline av_const int32_t av_clipl_int32_c(int64_t a) {
+    if ((a + 0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (int32_t) ((a >> 63) ^ 0x7FFFFFFF);
+    else return (int32_t) a;
 }
 
 /**
@@ -212,9 +209,8 @@ static av_always_inline av_const int32_t av_clipl_int32_c(int64_t a)
  * @param  p bit position to clip at
  * @return clipped value
  */
-static av_always_inline av_const int av_clip_intp2_c(int a, int p)
-{
-    if (((unsigned)a + (1 << p)) & ~((2 << p) - 1))
+static av_always_inline av_const int av_clip_intp2_c(int a, int p) {
+    if (((unsigned) a + (1 << p)) & ~((2 << p) - 1))
         return (a >> 31) ^ ((1 << p) - 1);
     else
         return a;
@@ -226,10 +222,9 @@ static av_always_inline av_const int av_clip_intp2_c(int a, int p)
  * @param  p bit position to clip at
  * @return clipped value
  */
-static av_always_inline av_const unsigned av_clip_uintp2_c(int a, int p)
-{
-    if (a & ~((1<<p) - 1)) return (~a) >> 31 & ((1<<p) - 1);
-    else                   return  a;
+static av_always_inline av_const unsigned av_clip_uintp2_c(int a, int p) {
+    if (a & ~((1 << p) - 1)) return (~a) >> 31 & ((1 << p) - 1);
+    else return a;
 }
 
 /**
@@ -238,8 +233,7 @@ static av_always_inline av_const unsigned av_clip_uintp2_c(int a, int p)
  * @param  p bit position to clip at
  * @return clipped value
  */
-static av_always_inline av_const unsigned av_mod_uintp2_c(unsigned a, unsigned p)
-{
+static av_always_inline av_const unsigned av_mod_uintp2_c(unsigned a, unsigned p) {
     return a & ((1 << p) - 1);
 }
 
@@ -250,9 +244,8 @@ static av_always_inline av_const unsigned av_mod_uintp2_c(unsigned a, unsigned p
  * @param  b another value
  * @return sum with signed saturation
  */
-static av_always_inline int av_sat_add32_c(int a, int b)
-{
-    return av_clipl_int32((int64_t)a + b);
+static av_always_inline int av_sat_add32_c(int a, int b) {
+    return av_clipl_int32((int64_t) a + b);
 }
 
 /**
@@ -262,8 +255,7 @@ static av_always_inline int av_sat_add32_c(int a, int b)
  * @param  b value doubled and added to a
  * @return sum sat(a + sat(2*b)) with signed saturation
  */
-static av_always_inline int av_sat_dadd32_c(int a, int b)
-{
+static av_always_inline int av_sat_dadd32_c(int a, int b) {
     return av_sat_add32(a, av_sat_add32(b, b));
 }
 
@@ -274,9 +266,8 @@ static av_always_inline int av_sat_dadd32_c(int a, int b)
  * @param  b another value
  * @return difference with signed saturation
  */
-static av_always_inline int av_sat_sub32_c(int a, int b)
-{
-    return av_clipl_int32((int64_t)a - b);
+static av_always_inline int av_sat_sub32_c(int a, int b) {
+    return av_clipl_int32((int64_t) a - b);
 }
 
 /**
@@ -286,8 +277,7 @@ static av_always_inline int av_sat_sub32_c(int a, int b)
  * @param  b value doubled and subtracted from a
  * @return difference sat(a - sat(2*b)) with signed saturation
  */
-static av_always_inline int av_sat_dsub32_c(int a, int b)
-{
+static av_always_inline int av_sat_dsub32_c(int a, int b) {
     return av_sat_sub32(a, av_sat_add32(b, b));
 }
 
@@ -298,14 +288,13 @@ static av_always_inline int av_sat_dsub32_c(int a, int b)
  * @param amax maximum value of the clip range
  * @return clipped value
  */
-static av_always_inline av_const float av_clipf_c(float a, float amin, float amax)
-{
+static av_always_inline av_const float av_clipf_c(float a, float amin, float amax) {
 #if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
     if (amin > amax) abort();
 #endif
-    if      (a < amin) return amin;
+    if (a < amin) return amin;
     else if (a > amax) return amax;
-    else               return a;
+    else return a;
 }
 
 /**
@@ -315,22 +304,20 @@ static av_always_inline av_const float av_clipf_c(float a, float amin, float ama
  * @param amax maximum value of the clip range
  * @return clipped value
  */
-static av_always_inline av_const double av_clipd_c(double a, double amin, double amax)
-{
+static av_always_inline av_const double av_clipd_c(double a, double amin, double amax) {
 #if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
     if (amin > amax) abort();
 #endif
-    if      (a < amin) return amin;
+    if (a < amin) return amin;
     else if (a > amax) return amax;
-    else               return a;
+    else return a;
 }
 
 /** Compute ceil(log2(x)).
  * @param x value used to compute ceil(log2(x))
  * @return computed ceiling of log2(x)
  */
-static av_always_inline av_const int av_ceil_log2_c(int x)
-{
+static av_always_inline av_const int av_ceil_log2_c(int x) {
     return av_log2((x - 1U) << 1);
 }
 
@@ -339,8 +326,7 @@ static av_always_inline av_const int av_ceil_log2_c(int x)
  * @param x value to count bits of
  * @return the number of bits set to one in x
  */
-static av_always_inline av_const int av_popcount_c(uint32_t x)
-{
+static av_always_inline av_const int av_popcount_c(uint32_t x) {
     x -= (x >> 1) & 0x55555555;
     x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
     x = (x + (x >> 4)) & 0x0F0F0F0F;
@@ -353,18 +339,16 @@ static av_always_inline av_const int av_popcount_c(uint32_t x)
  * @param x value to count bits of
  * @return the number of bits set to one in x
  */
-static av_always_inline av_const int av_popcount64_c(uint64_t x)
-{
-    return av_popcount((uint32_t)x) + av_popcount((uint32_t)(x >> 32));
+static av_always_inline av_const int av_popcount64_c(uint64_t x) {
+    return av_popcount((uint32_t) x) + av_popcount((uint32_t) (x >> 32));
 }
 
-static av_always_inline av_const int av_parity_c(uint32_t v)
-{
+static av_always_inline av_const int av_parity_c(uint32_t v) {
     return av_popcount(v) & 1;
 }
 
-#define MKTAG(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
-#define MKBETAG(a,b,c,d) ((d) | ((c) << 8) | ((b) << 16) | ((unsigned)(a) << 24))
+#define MKTAG(a, b, c, d) ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
+#define MKBETAG(a, b, c, d) ((d) | ((c) << 8) | ((b) << 16) | ((unsigned)(a) << 24))
 
 /**
  * Convert a UTF-8 character (up to 4 bytes) to its 32-bit UCS-4 encoded form.

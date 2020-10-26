@@ -101,25 +101,25 @@
  */
 
 #if defined(__INTEL_COMPILER) && __INTEL_COMPILER < 1110 || defined(__SUNPRO_C)
-    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
-    #define DECLARE_ASM_ALIGNED(n,t,v)  t __attribute__ ((aligned (n))) v
-    #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
+#define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
+#define DECLARE_ASM_ALIGNED(n,t,v)  t __attribute__ ((aligned (n))) v
+#define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
 #elif defined(__DJGPP__)
-    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (FFMIN(n, 16)))) v
-    #define DECLARE_ASM_ALIGNED(n,t,v)  t av_used __attribute__ ((aligned (FFMIN(n, 16)))) v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (FFMIN(n, 16)))) v
+#define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (FFMIN(n, 16)))) v
+#define DECLARE_ASM_ALIGNED(n,t,v)  t av_used __attribute__ ((aligned (FFMIN(n, 16)))) v
+#define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (FFMIN(n, 16)))) v
 #elif defined(__GNUC__) || defined(__clang__)
-    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
-    #define DECLARE_ASM_ALIGNED(n,t,v)  t av_used __attribute__ ((aligned (n))) v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (n))) v
+#define DECLARE_ALIGNED(n, t, v)      t __attribute__ ((aligned (n))) v
+#define DECLARE_ASM_ALIGNED(n, t, v)  t av_used __attribute__ ((aligned (n))) v
+#define DECLARE_ASM_CONST(n, t, v)    static const t av_used __attribute__ ((aligned (n))) v
 #elif defined(_MSC_VER)
-    #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
-    #define DECLARE_ASM_ALIGNED(n,t,v)  __declspec(align(n)) t v
-    #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
+#define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
+#define DECLARE_ASM_ALIGNED(n,t,v)  __declspec(align(n)) t v
+#define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
 #else
-    #define DECLARE_ALIGNED(n,t,v)      t v
-    #define DECLARE_ASM_ALIGNED(n,t,v)  t v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v
+#define DECLARE_ALIGNED(n,t,v)      t v
+#define DECLARE_ASM_ALIGNED(n,t,v)  t v
+#define DECLARE_ASM_CONST(n,t,v)    static const t v
 #endif
 
 /**
@@ -142,10 +142,10 @@
  * @see <a href="https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-g_t_0040code_007bmalloc_007d-function-attribute-3251">Function attribute `malloc` in GCC's documentation</a>
  */
 
-#if AV_GCC_VERSION_AT_LEAST(3,1)
-    #define av_malloc_attrib __attribute__((__malloc__))
+#if AV_GCC_VERSION_AT_LEAST(3, 1)
+#define av_malloc_attrib __attribute__((__malloc__))
 #else
-    #define av_malloc_attrib
+#define av_malloc_attrib
 #endif
 
 /**
@@ -163,10 +163,10 @@
  * @see <a href="https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-g_t_0040code_007balloc_005fsize_007d-function-attribute-3220">Function attribute `alloc_size` in GCC's documentation</a>
  */
 
-#if AV_GCC_VERSION_AT_LEAST(4,3)
-    #define av_alloc_size(...) __attribute__((alloc_size(__VA_ARGS__)))
+#if AV_GCC_VERSION_AT_LEAST(4, 3)
+#define av_alloc_size(...) __attribute__((alloc_size(__VA_ARGS__)))
 #else
-    #define av_alloc_size(...)
+#define av_alloc_size(...)
 #endif
 
 /**
@@ -217,7 +217,9 @@ void *av_mallocz(size_t size) av_malloc_attrib av_alloc_size(1);
  *         be allocated
  * @see av_malloc()
  */
-av_alloc_size(1, 2) void *av_malloc_array(size_t nmemb, size_t size);
+av_alloc_size(1, 2)
+
+void *av_malloc_array(size_t nmemb, size_t size);
 
 /**
  * Allocate a memory block for an array with av_mallocz().
@@ -232,7 +234,9 @@ av_alloc_size(1, 2) void *av_malloc_array(size_t nmemb, size_t size);
  * @see av_mallocz()
  * @see av_malloc_array()
  */
-av_alloc_size(1, 2) void *av_mallocz_array(size_t nmemb, size_t size);
+av_alloc_size(1, 2)
+
+void *av_mallocz_array(size_t nmemb, size_t size);
 
 /**
  * Non-inlined equivalent of av_mallocz_array().
@@ -320,7 +324,9 @@ void *av_realloc_f(void *ptr, size_t nelem, size_t elsize);
  *          correctly aligned.
  * @see av_reallocp_array()
  */
-av_alloc_size(2, 3) void *av_realloc_array(void *ptr, size_t nmemb, size_t size);
+av_alloc_size(2, 3)
+
+void *av_realloc_array(void *ptr, size_t nmemb, size_t size);
 
 /**
  * Allocate, reallocate, or free an array through a pointer to a pointer.
@@ -666,12 +672,11 @@ void *av_dynarray2_add(void **tab_ptr, int *nb_ptr, size_t elem_size,
  * @param[out] r   Pointer to the result of the operation
  * @return 0 on success, AVERROR(EINVAL) on overflow
  */
-static inline int av_size_mult(size_t a, size_t b, size_t *r)
-{
+static inline int av_size_mult(size_t a, size_t b, size_t *r) {
     size_t t = a * b;
     /* Hack inspired from glibc: don't try the division if nelem and elsize
      * are both less than sqrt(SIZE_MAX). */
-    if ((a | b) >= ((size_t)1 << (sizeof(size_t) * 4)) && a && t / a != b)
+    if ((a | b) >= ((size_t) 1 << (sizeof(size_t) * 4)) && a && t / a != b)
         return AVERROR(EINVAL);
     *r = t;
     return 0;

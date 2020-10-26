@@ -42,6 +42,7 @@ struct AVCAST5;
   * To free the struct: av_free(ptr)
   */
 struct AVCAST5 *av_cast5_alloc(void);
+
 /**
   * Initialize an AVCAST5 context.
   *
@@ -73,7 +74,8 @@ void av_cast5_crypt(struct AVCAST5 *ctx, uint8_t *dst, const uint8_t *src, int c
   * @param iv initialization vector for CBC mode, NULL for ECB mode
   * @param decrypt 0 for encryption, 1 for decryption
  */
-void av_cast5_crypt2(struct AVCAST5 *ctx, uint8_t *dst, const uint8_t *src, int count, uint8_t *iv, int decrypt);
+void av_cast5_crypt2(struct AVCAST5 *ctx, uint8_t *dst, const uint8_t *src, int count, uint8_t *iv,
+                     int decrypt);
 /**
  * @}
  */

@@ -59,7 +59,7 @@ void av_aes_ctr_crypt(struct AVAESCTR *a, uint8_t *dst, const uint8_t *src, int 
 /**
  * Get the current iv
  */
-const uint8_t* av_aes_ctr_get_iv(struct AVAESCTR *a);
+const uint8_t *av_aes_ctr_get_iv(struct AVAESCTR *a);
 
 /**
  * Generate a random iv
@@ -69,12 +69,12 @@ void av_aes_ctr_set_random_iv(struct AVAESCTR *a);
 /**
  * Forcefully change the 8-byte iv
  */
-void av_aes_ctr_set_iv(struct AVAESCTR *a, const uint8_t* iv);
+void av_aes_ctr_set_iv(struct AVAESCTR *a, const uint8_t *iv);
 
 /**
  * Forcefully change the "full" 16-byte iv, including the counter
  */
-void av_aes_ctr_set_full_iv(struct AVAESCTR *a, const uint8_t* iv);
+void av_aes_ctr_set_full_iv(struct AVAESCTR *a, const uint8_t *iv);
 
 /**
  * Increment the top 64 bit of the iv (performed after each frame)

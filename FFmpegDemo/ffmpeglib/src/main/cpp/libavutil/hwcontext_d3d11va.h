@@ -53,7 +53,7 @@ typedef struct AVD3D11VADeviceContext {
      * Deallocating the AVHWDeviceContext will always release this interface,
      * and it does not matter whether it was user-allocated.
      */
-    ID3D11Device        *device;
+    ID3D11Device *device;
 
     /**
      * If unset, this will be set from the device field on init.
@@ -69,7 +69,7 @@ typedef struct AVD3D11VADeviceContext {
      * Deallocating the AVHWDeviceContext will always release this interface,
      * and it does not matter whether it was user-allocated.
      */
-    ID3D11VideoDevice   *video_device;
+    ID3D11VideoDevice *video_device;
 
     /**
      * If unset, this will be set from the device_context field on init.
@@ -77,7 +77,7 @@ typedef struct AVD3D11VADeviceContext {
      * Deallocating the AVHWDeviceContext will always release this interface,
      * and it does not matter whether it was user-allocated.
      */
-    ID3D11VideoContext  *video_context;
+    ID3D11VideoContext *video_context;
 
     /**
      * Callbacks for locking. They protect accesses to device_context and
@@ -92,7 +92,9 @@ typedef struct AVD3D11VADeviceContext {
      * locking implementation.
      */
     void (*lock)(void *lock_ctx);
+
     void (*unlock)(void *lock_ctx);
+
     void *lock_ctx;
 } AVD3D11VADeviceContext;
 

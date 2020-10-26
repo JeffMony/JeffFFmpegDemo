@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/avcodec_btn"
             android:textSize="10sp"
@@ -15,6 +16,7 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/avformat_btn"
             android:textSize="10sp"
@@ -22,6 +24,7 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/avfilter_btn"
             android:textSize="10sp"
@@ -29,6 +32,7 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/protocol_btn"
             android:textSize="10sp"

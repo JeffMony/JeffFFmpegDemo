@@ -91,15 +91,15 @@ typedef struct AVVAAPIFramesContext {
      * the frame pool.  If null, default settings are used.
      */
     VASurfaceAttrib *attributes;
-    int           nb_attributes;
+    int nb_attributes;
     /**
      * The surfaces IDs of all surfaces in the pool after creation.
      * Only valid if AVHWFramesContext.initial_pool_size was positive.
      * These are intended to be used as the render_targets arguments to
      * vaCreateContext().
      */
-    VASurfaceID     *surface_ids;
-    int           nb_surfaces;
+    VASurfaceID *surface_ids;
+    int nb_surfaces;
 } AVVAAPIFramesContext;
 
 /**

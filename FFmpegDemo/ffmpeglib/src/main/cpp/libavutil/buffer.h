@@ -90,7 +90,7 @@ typedef struct AVBufferRef {
     /**
      * Size of data in bytes.
      */
-    int      size;
+    int size;
 } AVBufferRef;
 
 /**
@@ -246,7 +246,7 @@ typedef struct AVBufferPool AVBufferPool;
  * (av_buffer_alloc()).
  * @return newly created buffer pool on success, NULL on error.
  */
-AVBufferPool *av_buffer_pool_init(int size, AVBufferRef* (*alloc)(int size));
+AVBufferPool *av_buffer_pool_init(int size, AVBufferRef *(*alloc)(int size));
 
 /**
  * Allocate and initialize a buffer pool with a more complex allocator.
@@ -263,7 +263,7 @@ AVBufferPool *av_buffer_pool_init(int size, AVBufferRef* (*alloc)(int size));
  * @return newly created buffer pool on success, NULL on error.
  */
 AVBufferPool *av_buffer_pool_init2(int size, void *opaque,
-                                   AVBufferRef* (*alloc)(void *opaque, int size),
+                                   AVBufferRef *(*alloc)(void *opaque, int size),
                                    void (*pool_free)(void *opaque));
 
 /**

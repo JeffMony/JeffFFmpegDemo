@@ -49,7 +49,7 @@ typedef struct AVQSVContext {
      * Extra buffers to pass to encoder or decoder initialization.
      */
     mfxExtBuffer **ext_buffers;
-    int         nb_ext_buffers;
+    int nb_ext_buffers;
 
     /**
      * Encoding only. If this field is set to non-zero by the caller, libavcodec

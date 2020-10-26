@@ -56,7 +56,7 @@
 #endif
 
 #ifndef attribute_align_arg
-#if ARCH_X86_32 && AV_GCC_VERSION_AT_LEAST(4,2)
+#if ARCH_X86_32 && AV_GCC_VERSION_AT_LEAST(4, 2)
 #    define attribute_align_arg __attribute__((force_align_arg_pointer))
 #else
 #    define attribute_align_arg
@@ -292,15 +292,14 @@ void avpriv_request_sample(void *avc,
  * @param amax maximum value of the clip range
  * @return clipped value
  */
-static av_always_inline av_const int64_t ff_rint64_clip(double a, int64_t amin, int64_t amax)
-{
+static av_always_inline av_const int64_t ff_rint64_clip(double a, int64_t amin, int64_t amax) {
     int64_t res;
 #if defined(HAVE_AV_CONFIG_H) && defined(ASSERT_LEVEL) && ASSERT_LEVEL >= 2
     if (amin > amax) abort();
 #endif
     // INT64_MAX+1,INT64_MIN are exactly representable as IEEE doubles
     // do range checks first
-    if (a >=  9223372036854775808.0)
+    if (a >= 9223372036854775808.0)
         return amax;
     if (a <= -9223372036854775808.0)
         return amin;
@@ -335,12 +334,11 @@ int avpriv_tempfile(const char *prefix, char **filename, int log_offset, void *l
 
 int avpriv_set_systematic_pal2(uint32_t pal[256], enum AVPixelFormat pix_fmt);
 
-static av_always_inline av_const int avpriv_mirror(int x, int w)
-{
+static av_always_inline av_const int avpriv_mirror(int x, int w) {
     if (!w)
         return 0;
 
-    while ((unsigned)x > (unsigned)w) {
+    while ((unsigned) x > (unsigned) w) {
         x = -x;
         if (x < 0)
             x += 2 * w;

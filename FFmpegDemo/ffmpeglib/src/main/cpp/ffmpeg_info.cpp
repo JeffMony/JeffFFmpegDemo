@@ -56,8 +56,8 @@ Java_com_jeffmony_ffmpeglib_FFmpegInfoUtils_avfilterInfo(JNIEnv *env, jclass cla
     char info[40000] = {0};
     avfilter_register_all();
 
-    AVFilter *temp = (AVFilter *)avfilter_next(NULL);
-    while(temp != NULL) {
+    AVFilter *temp = (AVFilter *) avfilter_next(NULL);
+    while (temp != NULL) {
         sprintf(info, "%s%s\n", info, temp->name);
         temp = temp->next;
     }

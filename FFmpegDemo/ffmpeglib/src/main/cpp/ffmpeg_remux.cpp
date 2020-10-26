@@ -15,12 +15,9 @@ extern "C"
 JNIEXPORT int JNICALL
 Java_com_jeffmony_ffmpeglib_FFmpegRemuxUtils_remux(JNIEnv *env, jclass clazz, jstring input_path,
                                                    jstring output_path) {
-    if(use_log_report)
-    {
+    if (use_log_report) {
         av_log_set_callback(ffp_log_callback_report);
-    }
-    else
-    {
+    } else {
         av_log_set_callback(ffp_log_callback_brief);
     }
     const char *in_filename = env->GetStringUTFChars(input_path, 0);
@@ -46,7 +43,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegRemuxUtils_remux(JNIEnv *env, jclass clazz, js
         return ret;
     }
 
-    LOGI("Index=%d, duration=%lld",ifmt_ctx->nb_streams, ifmt_ctx->duration);
+    LOGI("Index=%d, duration=%lld", ifmt_ctx->nb_streams, ifmt_ctx->duration);
 
     av_dump_format(ifmt_ctx, 1, in_filename, 0);
 
@@ -61,7 +58,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegRemuxUtils_remux(JNIEnv *env, jclass clazz, js
     LOGI("Output format=%s", ofmt_ctx->oformat->name);
 
     stream_mapping_size = ifmt_ctx->nb_streams;
-    stream_mapping = (int *)av_mallocz_array(stream_mapping_size, sizeof(*stream_mapping));
+    stream_mapping = (int *) av_mallocz_array(stream_mapping_size, sizeof(*stream_mapping));
     if (!stream_mapping) {
         ret = AVERROR(ENOMEM);
         avformat_close_input(&ifmt_ctx);
@@ -141,7 +138,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegRemuxUtils_remux(JNIEnv *env, jclass clazz, js
         if (ret < 0)
             break;
 
-        in_stream  = ifmt_ctx->streams[pkt.stream_index];
+        in_stream = ifmt_ctx->streams[pkt.stream_index];
         if (pkt.stream_index >= stream_mapping_size ||
             stream_mapping[pkt.stream_index] < 0) {
             av_packet_unref(&pkt);

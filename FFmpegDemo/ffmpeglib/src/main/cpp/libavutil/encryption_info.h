@@ -91,14 +91,14 @@ typedef struct AVEncryptionInitInfo {
      * is not known.  This should always be 16 bytes, but may change in the
      * future.
      */
-    uint8_t* system_id;
+    uint8_t *system_id;
     uint32_t system_id_size;
 
     /**
      * An array of key IDs this initialization data is for.  All IDs are the
      * same length.  Can be NULL if there are no known key IDs.
      */
-    uint8_t** key_ids;
+    uint8_t **key_ids;
     /** The number of key IDs. */
     uint32_t num_key_ids;
     /**
@@ -113,7 +113,7 @@ typedef struct AVEncryptionInitInfo {
      * can be NULL if there is no initialization data; in that case, there
      * will be at least one key ID.
      */
-    uint8_t* data;
+    uint8_t *data;
     uint32_t data_size;
 } AVEncryptionInitInfo;
 
@@ -128,7 +128,8 @@ typedef struct AVEncryptionInitInfo {
  *
  * @return The new AVEncryptionInfo structure, or NULL on error.
  */
-AVEncryptionInfo *av_encryption_info_alloc(uint32_t subsample_count, uint32_t key_id_size, uint32_t iv_size);
+AVEncryptionInfo *
+av_encryption_info_alloc(uint32_t subsample_count, uint32_t key_id_size, uint32_t iv_size);
 
 /**
  * Allocates an AVEncryptionInfo structure with a copy of the given data.
@@ -159,7 +160,7 @@ AVEncryptionInfo *av_encryption_info_get_side_data(const uint8_t *side_data, siz
  * @return The new side-data pointer, or NULL.
  */
 uint8_t *av_encryption_info_add_side_data(
-      const AVEncryptionInfo *info, size_t *side_data_size);
+        const AVEncryptionInfo *info, size_t *side_data_size);
 
 
 /**
@@ -169,13 +170,13 @@ uint8_t *av_encryption_info_add_side_data(
  * @return The new AVEncryptionInitInfo structure, or NULL on error.
  */
 AVEncryptionInitInfo *av_encryption_init_info_alloc(
-    uint32_t system_id_size, uint32_t num_key_ids, uint32_t key_id_size, uint32_t data_size);
+        uint32_t system_id_size, uint32_t num_key_ids, uint32_t key_id_size, uint32_t data_size);
 
 /**
  * Frees the given encryption init info object.  This MUST NOT be used to free
  * the side-data data pointer, that should use normal side-data methods.
  */
-void av_encryption_init_info_free(AVEncryptionInitInfo* info);
+void av_encryption_init_info_free(AVEncryptionInitInfo *info);
 
 /**
  * Creates a copy of the AVEncryptionInitInfo that is contained in the given
@@ -185,7 +186,7 @@ void av_encryption_init_info_free(AVEncryptionInitInfo* info);
  * @return The new AVEncryptionInitInfo structure, or NULL on error.
  */
 AVEncryptionInitInfo *av_encryption_init_info_get_side_data(
-    const uint8_t* side_data, size_t side_data_size);
+        const uint8_t *side_data, size_t side_data_size);
 
 /**
  * Allocates and initializes side data that holds a copy of the given encryption
@@ -195,6 +196,6 @@ AVEncryptionInitInfo *av_encryption_init_info_get_side_data(
  * @return The new side-data pointer, or NULL.
  */
 uint8_t *av_encryption_init_info_add_side_data(
-    const AVEncryptionInitInfo *info, size_t *side_data_size);
+        const AVEncryptionInitInfo *info, size_t *side_data_size);
 
 #endif /* AVUTIL_ENCRYPTION_INFO_H */

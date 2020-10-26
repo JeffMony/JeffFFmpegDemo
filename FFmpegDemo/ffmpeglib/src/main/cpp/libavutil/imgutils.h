@@ -106,7 +106,7 @@ int av_image_alloc(uint8_t *pointers[4], int linesizes[4],
  * @param dst_linesize linesize for the image plane in dst
  * @param src_linesize linesize for the image plane in src
  */
-void av_image_copy_plane(uint8_t       *dst, int dst_linesize,
+void av_image_copy_plane(uint8_t *dst, int dst_linesize,
                          const uint8_t *src, int src_linesize,
                          int bytewidth, int height);
 
@@ -134,7 +134,7 @@ void av_image_copy(uint8_t *dst_data[4], int dst_linesizes[4],
  * @note On x86, the linesizes currently need to be aligned to the cacheline
  *       size (i.e. 64) to get improved performance.
  */
-void av_image_copy_uc_from(uint8_t *dst_data[4],       const ptrdiff_t dst_linesizes[4],
+void av_image_copy_uc_from(uint8_t *dst_data[4], const ptrdiff_t dst_linesizes[4],
                            const uint8_t *src_data[4], const ptrdiff_t src_linesizes[4],
                            enum AVPixelFormat pix_fmt, int width, int height);
 
@@ -198,7 +198,7 @@ int av_image_get_buffer_size(enum AVPixelFormat pix_fmt, int width, int height, 
  * (error code) on error
  */
 int av_image_copy_to_buffer(uint8_t *dst, int dst_size,
-                            const uint8_t * const src_data[4], const int src_linesize[4],
+                            const uint8_t *const src_data[4], const int src_linesize[4],
                             enum AVPixelFormat pix_fmt, int width, int height, int align);
 
 /**
@@ -226,7 +226,9 @@ int av_image_check_size(unsigned int w, unsigned int h, int log_offset, void *lo
  * @param log_ctx the parent logging context, it may be NULL
  * @return >= 0 if valid, a negative error code otherwise
  */
-int av_image_check_size2(unsigned int w, unsigned int h, int64_t max_pixels, enum AVPixelFormat pix_fmt, int log_offset, void *log_ctx);
+int
+av_image_check_size2(unsigned int w, unsigned int h, int64_t max_pixels, enum AVPixelFormat pix_fmt,
+                     int log_offset, void *log_ctx);
 
 /**
  * Check if the given sample aspect ratio of an image is valid.

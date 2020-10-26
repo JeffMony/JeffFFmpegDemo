@@ -25,8 +25,7 @@
 static int nb_hw_devices;
 static HWDevice **hw_devices;
 
-static HWDevice *hw_device_get_by_type(enum AVHWDeviceType type)
-{
+static HWDevice *hw_device_get_by_type(enum AVHWDeviceType type) {
     HWDevice *found = NULL;
     int i;
     for (i = 0; i < nb_hw_devices; i++) {
@@ -39,8 +38,7 @@ static HWDevice *hw_device_get_by_type(enum AVHWDeviceType type)
     return found;
 }
 
-HWDevice *hw_device_get_by_name(const char *name)
-{
+HWDevice *hw_device_get_by_name(const char *name) {
     int i;
     for (i = 0; i < nb_hw_devices; i++) {
         if (!strcmp(hw_devices[i]->name, name))
@@ -49,8 +47,7 @@ HWDevice *hw_device_get_by_name(const char *name)
     return NULL;
 }
 
-static HWDevice *hw_device_add(void)
-{
+static HWDevice *hw_device_add(void) {
     int err;
     err = av_reallocp_array(&hw_devices, nb_hw_devices + 1,
                             sizeof(*hw_devices));
@@ -64,8 +61,7 @@ static HWDevice *hw_device_add(void)
     return hw_devices[nb_hw_devices++];
 }
 
-static char *hw_device_default_name(enum AVHWDeviceType type)
-{
+static char *hw_device_default_name(enum AVHWDeviceType type) {
     // Make an automatic name of the form "type%d".  We arbitrarily
     // limit at 1000 anonymous devices of the same type - there is
     // probably something else very wrong if you get to this limit.
@@ -89,8 +85,7 @@ static char *hw_device_default_name(enum AVHWDeviceType type)
     return name;
 }
 
-int hw_device_init_from_string(const char *arg, HWDevice **dev_out)
-{
+int hw_device_init_from_string(const char *arg, HWDevice **dev_out) {
     // "type=name:device,key=value,key2=value2"
     // "type:device,key=value,key2=value2"
     // -> av_hwdevice_ctx_create()
@@ -225,8 +220,7 @@ int hw_device_init_from_string(const char *arg, HWDevice **dev_out)
 
 static int hw_device_init_from_type(enum AVHWDeviceType type,
                                     const char *device,
-                                    HWDevice **dev_out)
-{
+                                    HWDevice **dev_out) {
     AVBufferRef *device_ref = NULL;
     HWDevice *dev;
     char *name;
@@ -266,8 +260,7 @@ static int hw_device_init_from_type(enum AVHWDeviceType type,
     return err;
 }
 
-void hw_device_free_all(void)
-{
+void hw_device_free_all(void) {
     int i;
     for (i = 0; i < nb_hw_devices; i++) {
         av_freep(&hw_devices[i]->name);
@@ -278,8 +271,7 @@ void hw_device_free_all(void)
     nb_hw_devices = 0;
 }
 
-static HWDevice *hw_device_match_by_codec(const AVCodec *codec)
-{
+static HWDevice *hw_device_match_by_codec(const AVCodec *codec) {
     const AVCodecHWConfig *config;
     HWDevice *dev;
     int i;
@@ -295,8 +287,7 @@ static HWDevice *hw_device_match_by_codec(const AVCodec *codec)
     }
 }
 
-int hw_device_setup_for_decode(InputStream *ist)
-{
+int hw_device_setup_for_decode(InputStream *ist) {
     const AVCodecHWConfig *config;
     enum AVHWDeviceType type;
     HWDevice *dev = NULL;
@@ -411,8 +402,7 @@ int hw_device_setup_for_decode(InputStream *ist)
     return 0;
 }
 
-int hw_device_setup_for_encode(OutputStream *ost)
-{
+int hw_device_setup_for_encode(OutputStream *ost) {
     HWDevice *dev;
 
     dev = hw_device_match_by_codec(ost->enc);
@@ -427,8 +417,7 @@ int hw_device_setup_for_encode(OutputStream *ost)
     }
 }
 
-static int hwaccel_retrieve_data(AVCodecContext *avctx, AVFrame *input)
-{
+static int hwaccel_retrieve_data(AVCodecContext *avctx, AVFrame *input) {
     InputStream *ist = avctx->opaque;
     AVFrame *output = NULL;
     enum AVPixelFormat output_format = ist->hwaccel_output_format;
@@ -469,8 +458,7 @@ static int hwaccel_retrieve_data(AVCodecContext *avctx, AVFrame *input)
     return err;
 }
 
-int hwaccel_decode_init(AVCodecContext *avctx)
-{
+int hwaccel_decode_init(AVCodecContext *avctx) {
     InputStream *ist = avctx->opaque;
 
     ist->hwaccel_retrieve_data = &hwaccel_retrieve_data;

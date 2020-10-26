@@ -18,12 +18,9 @@ JNIEXPORT jobject JNICALL
 Java_com_jeffmony_ffmpeglib_FFmpegVideoInfoUtils_getVideoInfo(JNIEnv *env, jclass clazz,
                                                               jstring input_path) {
 
-    if(use_log_report)
-    {
+    if (use_log_report) {
         av_log_set_callback(ffp_log_callback_report);
-    }
-    else
-    {
+    } else {
         av_log_set_callback(ffp_log_callback_brief);
     }
 
@@ -52,7 +49,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoInfoUtils_getVideoInfo(JNIEnv *env, jclas
 
     duration = ifmt_ctx->duration;
 
-    for(i = 0; i < ifmt_ctx->nb_streams; i++) {
+    for (i = 0; i < ifmt_ctx->nb_streams; i++) {
         AVStream *in_stream = ifmt_ctx->streams[i];
         AVCodecParameters *in_codecpar = in_stream->codecpar;
         if (in_codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {

@@ -45,7 +45,7 @@ typedef enum {
     AV_CLASS_CATEGORY_DEVICE_OUTPUT,
     AV_CLASS_CATEGORY_DEVICE_INPUT,
     AV_CLASS_CATEGORY_NB  ///< not part of ABI/API
-}AVClassCategory;
+} AVClassCategory;
 
 #define AV_IS_INPUT_DEVICE(category) \
     (((category) == AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT) || \
@@ -69,13 +69,13 @@ typedef struct AVClass {
      * The name of the class; usually it is the same name as the
      * context structure type to which the AVClass is associated.
      */
-    const char* class_name;
+    const char *class_name;
 
     /**
      * A pointer to a function which returns the name of a context
      * instance ctx associated with the class.
      */
-    const char* (*item_name)(void* ctx);
+    const char *(*item_name)(void *ctx);
 
     /**
      * a pointer to the first option specified in the class if any or NULL
@@ -110,7 +110,7 @@ typedef struct AVClass {
     /**
      * Return next AVOptions-enabled child or NULL
      */
-    void* (*child_next)(void *obj, void *prev);
+    void *(*child_next)(void *obj, void *prev);
 
     /**
      * Return an AVClass corresponding to the next potential
@@ -120,7 +120,7 @@ typedef struct AVClass {
      * child_next iterates over _already existing_ objects, while
      * child_class_next iterates over _all possible_ children.
      */
-    const struct AVClass* (*child_class_next)(const struct AVClass *prev);
+    const struct AVClass *(*child_class_next)(const struct AVClass *prev);
 
     /**
      * Category used for visualization (like color)
@@ -133,7 +133,7 @@ typedef struct AVClass {
      * Callback to return the category.
      * available since version (51 << 16 | 59 << 8 | 100)
      */
-    AVClassCategory (*get_category)(void* ctx);
+    AVClassCategory (*get_category)(void *ctx);
 
     /**
      * Callback to return the supported/allowed ranges.
@@ -279,7 +279,7 @@ void av_log_set_level(int level);
  *
  * @param callback A logging function with a compatible signature.
  */
-void av_log_set_callback(void (*callback)(void*, int, const char*, va_list));
+void av_log_set_callback(void (*callback)(void *, int, const char *, va_list));
 
 /**
  * Default logging callback
@@ -304,7 +304,8 @@ void av_log_default_callback(void *avcl, int level, const char *fmt,
  *
  * @return The AVClass class_name
  */
-const char* av_default_item_name(void* ctx);
+const char *av_default_item_name(void *ctx);
+
 AVClassCategory av_default_get_category(void *ptr);
 
 /**
@@ -353,6 +354,7 @@ int av_log_format_line2(void *ptr, int level, const char *fmt, va_list vl,
 #define AV_LOG_PRINT_LEVEL 2
 
 void av_log_set_flags(int arg);
+
 int av_log_get_flags(void);
 
 /**
