@@ -17,6 +17,33 @@ extern "C" {
 }
 
 extern "C"
+JNIEXPORT void JNICALL
+Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_printVideoInfo(JNIEnv *env, jclass clazz,
+                                                            jstring src_path) {
+    if (use_log_report) {
+        av_log_set_callback(ffp_log_callback_report);
+    } else {
+        av_log_set_callback(ffp_log_callback_brief);
+    }
+    AVFormatContext *ifmt_ctx = NULL;
+    int ret;
+    const char *in_filename = env->GetStringUTFChars(src_path, 0);
+    if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
+        LOGE("Cannot open input file");
+        goto end;
+    }
+    if ((ret = avformat_find_stream_info(ifmt_ctx, 0)) < 0) {
+        LOGE("Failed to retrieve input stream information");
+        goto end;
+    }
+    av_dump_format(ifmt_ctx, 0, in_filename, 0);
+
+end:
+    avformat_close_input(&ifmt_ctx);
+
+}
+
+extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_getVideoInfo(JNIEnv *env, jclass clazz,
                                                           jstring input_path) {
@@ -119,8 +146,8 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_getVideoInfo(JNIEnv *env, jclass cl
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, jstring input_path,
-                                                   jstring output_path) {
+Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideo(JNIEnv *env, jclass clazz, jstring input_path,
+                                                            jstring output_path) {
     if (use_log_report) {
         av_log_set_callback(ffp_log_callback_report);
     } else {
@@ -139,14 +166,12 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
 
     if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
         LOGE("Could not open input file '%s'", in_filename);
-        avformat_close_input(&ifmt_ctx);
-        return ret;
+        goto end;
     }
 
     if ((ret = avformat_find_stream_info(ifmt_ctx, 0)) < 0) {
         LOGE("Failed to retrieve input stream information");
-        avformat_close_input(&ifmt_ctx);
-        return ret;
+        goto end;
     }
 
     LOGI("Index=%d, duration=%lld", ifmt_ctx->nb_streams, ifmt_ctx->duration);
@@ -157,9 +182,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
     if (!ofmt_ctx) {
         LOGE("Could not create output context\n");
         ret = AVERROR_UNKNOWN;
-        avformat_close_input(&ifmt_ctx);
-        avformat_free_context(ofmt_ctx);
-        return ret;
+        goto end;
     }
     LOGI("Output format=%s", ofmt_ctx->oformat->name);
 
@@ -167,10 +190,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
     stream_mapping = (int *) av_mallocz_array(stream_mapping_size, sizeof(*stream_mapping));
     if (!stream_mapping) {
         ret = AVERROR(ENOMEM);
-        avformat_close_input(&ifmt_ctx);
-        avformat_free_context(ofmt_ctx);
-        av_freep(&stream_mapping);
-        return ret;
+        goto end;
     }
 
     ofmt = ofmt_ctx->oformat;
@@ -179,8 +199,6 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
         AVStream *out_stream;
         AVStream *in_stream = ifmt_ctx->streams[i];
         AVCodecParameters *in_codecpar = in_stream->codecpar;
-
-        LOGI("width=%d, heigth=%d", in_codecpar->width, in_codecpar->height);
 
         if (in_codecpar->codec_type != AVMEDIA_TYPE_AUDIO &&
             in_codecpar->codec_type != AVMEDIA_TYPE_VIDEO &&
@@ -195,19 +213,13 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
         if (!out_stream) {
             LOGE("Failed allocating output stream\n");
             ret = AVERROR_UNKNOWN;
-            avformat_close_input(&ifmt_ctx);
-            avformat_free_context(ofmt_ctx);
-            av_freep(&stream_mapping);
-            return ret;
+            goto end;
         }
 
         ret = avcodec_parameters_copy(out_stream->codecpar, in_codecpar);
         if (ret < 0) {
             LOGE("Failed to copy codec parameters\n");
-            avformat_close_input(&ifmt_ctx);
-            avformat_free_context(ofmt_ctx);
-            av_freep(&stream_mapping);
-            return ret;
+            goto end;
         }
         out_stream->codecpar->codec_tag = 0;
     }
@@ -218,28 +230,19 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
         ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
         if (ret < 0) {
             LOGE("Could not open output file '%s'", out_filename);
-            avformat_close_input(&ifmt_ctx);
-            if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
-                avio_closep(&ofmt_ctx->pb);
-            avformat_free_context(ofmt_ctx);
-            av_freep(&stream_mapping);
-            return ret;
+            goto end;
         }
     }
 
     ret = avformat_write_header(ofmt_ctx, NULL);
     if (ret < 0) {
         LOGE("Error occurred when opening output file, ret=%d\n", ret);
-        avformat_close_input(&ifmt_ctx);
-        if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
-            avio_closep(&ofmt_ctx->pb);
-        avformat_free_context(ofmt_ctx);
-        av_freep(&stream_mapping);
-        return ret;
+        goto end;
     }
 
     while (1) {
         AVStream *in_stream, *out_stream;
+
         ret = av_read_frame(ifmt_ctx, &pkt);
         if (ret < 0)
             break;
@@ -267,24 +270,32 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_remux(JNIEnv *env, jclass clazz, js
         ret = av_interleaved_write_frame(ofmt_ctx, &pkt);
         if (ret < 0) {
             LOGE("Error muxing packet\n");
-            avformat_close_input(&ifmt_ctx);
-            if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
-                avio_closep(&ofmt_ctx->pb);
-            avformat_free_context(ofmt_ctx);
-            av_freep(&stream_mapping);
-            return ret;
+            goto end;
         }
         av_packet_unref(&pkt);
     }
+
     av_write_trailer(ofmt_ctx);
 
+    return 1;
+
+end:
+
     avformat_close_input(&ifmt_ctx);
+
+    /* close output */
     if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
         avio_closep(&ofmt_ctx->pb);
     avformat_free_context(ofmt_ctx);
+
     av_freep(&stream_mapping);
-    return 1;
-}
+
+    if (ret < 0 && ret != AVERROR_EOF) {
+        LOGE("Error occurred: %s\n", av_err2str(ret));
+        return -1;
+    }
+
+    return -1;}
 
 extern "C"
 JNIEXPORT jint JNICALL

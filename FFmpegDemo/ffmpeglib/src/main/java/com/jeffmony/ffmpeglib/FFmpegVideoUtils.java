@@ -15,9 +15,11 @@ public class FFmpegVideoUtils {
         System.loadLibrary("swscale");
     }
 
+    public static native void printVideoInfo(String srcPath);
+
     public static native VideoInfo getVideoInfo(String inputPath);
 
-    public static native int remux(String inputPath, String outputPath);
+    public static native int transformVideo(String inputPath, String outputPath);
 
     public static native int cutVideo(double start, double end, String inputPath, String outputPath);
 }

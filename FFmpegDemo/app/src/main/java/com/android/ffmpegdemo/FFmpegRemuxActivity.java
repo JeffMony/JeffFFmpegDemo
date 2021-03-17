@@ -56,8 +56,8 @@ public class FFmpegRemuxActivity extends AppCompatActivity implements View.OnCli
                 return;
             }
         }
-
-        FFmpegVideoUtils.remux(inputPath, outputPath);
+        LogUtils.i(TAG, "inputPath="+inputPath+", outputPath="+outputPath);
+        FFmpegVideoUtils.transformVideo(inputPath, outputPath);
     }
 
     @Override
