@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.jeffmony.ffmpeglib.FFmpegVideoUtils;
 import com.jeffmony.ffmpeglib.LogUtils;
+import com.jeffmony.ffmpeglib.VideoProcessManager;
+import com.jeffmony.ffmpeglib.listener.IM3U8MergeListener;
 
 import java.io.File;
 
@@ -57,7 +59,17 @@ public class FFmpegRemuxActivity extends AppCompatActivity implements View.OnCli
             }
         }
         LogUtils.i(TAG, "inputPath="+inputPath+", outputPath="+outputPath);
-        FFmpegVideoUtils.transformVideo(inputPath, outputPath);
+        VideoProcessManager.getInstance().mergeVideo(inputPath, outputPath, new IM3U8MergeListener() {
+            @Override
+            public void onMergedFinished() {
+                LogUtils.i(TAG, "onMergedFinished");
+            }
+
+            @Override
+            public void onMergeFailed(Exception e) {
+                LogUtils.i(TAG, "onMergeFailed, e="+e.getMessage());
+            }
+        });
     }
 
     @Override

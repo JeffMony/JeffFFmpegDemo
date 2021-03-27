@@ -21,5 +21,7 @@ public class FFmpegVideoUtils {
 
     public static native int transformVideo(String inputPath, String outputPath);
 
+    public static native int transformVideoWithDimensions(String inputPath, String outputPath, int width, int height);
+
     public static native int cutVideo(double start, double end, String inputPath, String outputPath);
 }
