@@ -337,6 +337,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideo(JNIEnv *env, jclass 
     int *stream_mapping = NULL;
     int stream_mapping_size;
     int width = 0, height = 0;
+    int64_t last_dts = 0;
 
     AVDictionary *options = NULL;
     av_dict_set(&options, PROTOCOL_OPTION_KEY, PROTOCOL_OPTION_VALUE, 0);
@@ -356,6 +357,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideo(JNIEnv *env, jclass 
     }
 
     av_dump_format(ifmt_ctx, 1, in_filename, 0);
+    ifmt_ctx->iformat->flags |= AVFMT_NODIMENSIONS;
 
     avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, out_filename);
     if (!ofmt_ctx) {
@@ -365,6 +367,9 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideo(JNIEnv *env, jclass 
         return ERR_ALLOC_OUTPUT_CTX;
     }
     LOGI("Output format=%s", ofmt_ctx->oformat->name);
+
+    ofmt_ctx->oformat->flags |= AVFMT_TS_NONSTRICT;
+    ofmt_ctx->oformat->flags |= AVFMT_NODIMENSIONS;
 
     stream_mapping_size = ifmt_ctx->nb_streams;
     stream_mapping = (int *) av_mallocz_array(stream_mapping_size, sizeof(*stream_mapping));
@@ -432,7 +437,7 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideo(JNIEnv *env, jclass 
         LOGI("Open output file");
         ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
         if (ret < 0) {
-            LOGE("Could not open output file '%s'", out_filename);
+            LOGE("Could not  '%s'", out_filename);
             LOGE("Error occurred: %s\n, width=%d, height=%d", av_err2str(ret), width, height);
             avformat_close_input(&ifmt_ctx);
             /* close output */
@@ -475,10 +480,25 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideo(JNIEnv *env, jclass 
         out_stream = ofmt_ctx->streams[pkt.stream_index];
 
         if (pkt.pts == AV_NOPTS_VALUE) {
-            pkt.pts = pkt.dts;
+            if (pkt.dts != AV_NOPTS_VALUE) {
+                pkt.pts = pkt.dts;
+                last_dts = pkt.dts;
+            } else {
+                pkt.pts = last_dts + 1;
+                pkt.dts = pkt.pts;
+                last_dts = pkt.pts;
+            }
+        } else {
+            if (pkt.dts != AV_NOPTS_VALUE) {
+                last_dts = pkt.dts;
+            } else {
+                pkt.dts = pkt.pts;
+                last_dts = pkt.dts;
+            }
         }
-        if (pkt.dts == AV_NOPTS_VALUE) {
-            pkt.dts = pkt.pts;
+
+        if (pkt.pts < pkt.dts) {
+            pkt.pts = pkt.dts;
         }
 
         /* copy packet */
@@ -558,6 +578,8 @@ Java_com_jeffmony_ffmpeglib_FFmpegVideoUtils_transformVideoWithDimensions(JNIEnv
     }
 
     av_dump_format(ifmt_ctx, 1, in_filename, 0);
+
+    ifmt_ctx->iformat->flags |= AVFMT_NODIMENSIONS;
 
     avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, out_filename);
     if (!ofmt_ctx) {
