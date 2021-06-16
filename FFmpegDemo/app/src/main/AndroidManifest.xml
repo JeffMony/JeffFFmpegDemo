@@ -24,7 +24,7 @@
         <activity android:name=".FFmpegInfoActivity" />
         <activity android:name=".VideoTransformActivity" />
         <activity android:name=".FFmpegCmdActivity" />
-        <activity android:name=".FFmpegVideoInfoActivity" />
+        <activity android:name=".VideoInfoActivity" />
         <activity android:name=".FFmpegCutVideoActivity" />
     </application>
 

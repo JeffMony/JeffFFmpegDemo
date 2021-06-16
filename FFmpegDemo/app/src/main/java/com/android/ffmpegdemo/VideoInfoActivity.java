@@ -14,7 +14,7 @@ import com.jeffmony.ffmpeglib.VideoProcessor;
 import com.jeffmony.ffmpeglib.LogUtils;
 import com.jeffmony.ffmpeglib.model.VideoInfo;
 
-public class FFmpegVideoInfoActivity extends AppCompatActivity {
+public class VideoInfoActivity extends AppCompatActivity {
 
     private static final String TAG = "FFmpegVideoInfoActivity";
 

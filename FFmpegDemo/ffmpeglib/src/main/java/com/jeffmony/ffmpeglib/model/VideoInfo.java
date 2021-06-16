@@ -18,6 +18,7 @@ public class VideoInfo {
         return mName;
     }
 
+    //这个duration是微秒,需要除以1000 * 1000才能得到秒
     public void setDuration(long duration) {
         mDuration = duration;
     }
@@ -63,9 +64,14 @@ public class VideoInfo {
     }
 
     public String toString() {
-        return "VideoInfo[Width=" + mWidth + ", Height=" + mHeight +
-                ", Duration=" + mDuration + ", Video=" + mVideoFormat +
-                ", Audio=" + mAudioFormat + ", Container=" + mContainerFormat + "]";
+        return "VideoInfo[" +
+                "\nWidth=" + mWidth +
+                "\nHeight=" + mHeight +
+                "\nDuration=" + mDuration +
+                "\nVideoDecoder=" + mVideoFormat +
+                "\nAudioDecoder=" + mAudioFormat +
+                "\nMediaContainer=" + mContainerFormat +
+                "\n]";
     }
 
 }
