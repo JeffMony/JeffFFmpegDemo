@@ -15,6 +15,7 @@ import com.jeffmony.ffmpeglib.VideoProcessManager;
 import com.jeffmony.ffmpeglib.listener.IM3U8MergeListener;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 public class VideoTransformActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -66,7 +67,8 @@ public class VideoTransformActivity extends AppCompatActivity implements View.On
             @Override
             public void onM3U8MergeProgress(float progress) {
                 LogUtils.i(TAG, "onM3U8MergeProgress progress="+progress);
-                mTransformProgressTxt.setText(progress + "%");
+                DecimalFormat format = new DecimalFormat(".00");
+                mTransformProgressTxt.setText("已经转换的进度: " + format.format(progress) + "%");
             }
 
             @Override
