@@ -17,7 +17,6 @@
 
         <EditText
             android:id="@+id/src_path_txt"
-            android:text="/sdcard/下载/.video-cache/232c2448c137b2be04534e95c0d362c3/232c2448c137b2be04534e95c0d362c3.m3u8"
             android:hint="请输入原文件"
             android:layout_width="match_parent"
             android:layout_height="150dp" />
@@ -30,7 +29,6 @@
 
         <EditText
             android:id="@+id/dest_path_txt"
-            android:text="/sdcard/下载/hello.mp4"
             android:hint="请输出目标文件"
             android:layout_width="match_parent"
             android:layout_height="150dp" />
