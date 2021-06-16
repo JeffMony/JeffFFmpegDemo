@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, FFmpegInfoActivity.class);
             startActivity(intent);
         } else if (v == mRemuxBtn) {
-            Intent intent = new Intent(this, FFmpegRemuxActivity.class);
+            Intent intent = new Intent(this, VideoTransformActivity.class);
             startActivity(intent);
         } else if (v == mVideoInfoBtn) {
             Intent intent = new Intent(this, FFmpegVideoInfoActivity.class);

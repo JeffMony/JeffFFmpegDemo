@@ -12,20 +12,20 @@ android {
 
         consumerProguardFiles "consumer-rules.pro"
 
-//        externalNativeBuild {
-//            cmake {
-//                cppFlags "-fexceptions"
-//                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-//            }
-//        }
+        externalNativeBuild {
+            cmake {
+                cppFlags "-fexceptions"
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            }
+        }
     }
 
-//    externalNativeBuild {
-//        cmake {
-//            path "src/main/cpp/CMakeLists.txt"
-//            version "3.10.2"
-//        }
-//    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
 
     buildTypes {
         release {

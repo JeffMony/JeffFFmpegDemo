@@ -8,7 +8,7 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.jeffmony.ffmpeglib.FFmpegVideoUtils;
+import com.jeffmony.ffmpeglib.VideoProcessor;
 import com.jeffmony.ffmpeglib.LogUtils;
 
 public class FFmpegCutVideoActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,7 +49,8 @@ public class FFmpegCutVideoActivity extends AppCompatActivity implements View.On
             return;
         }
 
-        FFmpegVideoUtils.cutVideo(start, end, srcPath, destPath);
+        VideoProcessor processor = new VideoProcessor();
+        processor.cutVideo(start, end, srcPath, destPath);
 
     }
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.jeffmony.ffmpeglib.FFmpegVideoUtils;
+import com.jeffmony.ffmpeglib.VideoProcessor;
 import com.jeffmony.ffmpeglib.LogUtils;
 import com.jeffmony.ffmpeglib.model.VideoInfo;
 
@@ -39,7 +39,8 @@ public class FFmpegVideoInfoActivity extends AppCompatActivity {
                     LogUtils.w(TAG, "当前输入的url为空");
                     return;
                 }
-                VideoInfo videoInfo = FFmpegVideoUtils.getVideoInfo(inputPath);
+                VideoProcessor processor = new VideoProcessor();
+                VideoInfo videoInfo = processor.getVideoInfo(inputPath);
                 if (videoInfo == null) {
                     LogUtils.w(TAG, "获取视频信息失败");
                     return;
