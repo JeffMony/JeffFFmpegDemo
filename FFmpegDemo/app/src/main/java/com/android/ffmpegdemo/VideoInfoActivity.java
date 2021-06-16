@@ -16,7 +16,7 @@ import com.jeffmony.ffmpeglib.model.VideoInfo;
 
 public class VideoInfoActivity extends AppCompatActivity {
 
-    private static final String TAG = "FFmpegVideoInfoActivity";
+    private static final String TAG = "VideoInfoActivity";
 
     private EditText mSrcText;
     private Button mInfoBtn;

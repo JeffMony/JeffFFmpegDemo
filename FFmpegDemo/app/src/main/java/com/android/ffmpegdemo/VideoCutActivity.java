@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.jeffmony.ffmpeglib.VideoProcessor;
 import com.jeffmony.ffmpeglib.LogUtils;
 
-public class FFmpegCutVideoActivity extends AppCompatActivity implements View.OnClickListener {
+public class VideoCutActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "FFmpegCutVideoActivity";
+    private static final String TAG = "VideoCutActivity";
 
     private EditText mSrcPathTxt;
     private EditText mDestPathTxt;

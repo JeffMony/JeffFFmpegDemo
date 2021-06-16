@@ -454,6 +454,7 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
         }
         out_stream->codecpar->codec_tag = 0;
     }
+
     if (!(ofmt->flags & AVFMT_NOFILE)) {
         ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
         if (ret < 0) {
@@ -474,7 +475,7 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
 
     ret = av_seek_frame(ifmt_ctx, -1, start_s * AV_TIME_BASE, AVSEEK_FLAG_ANY);
     if (ret < 0) {
-        LOGE("Error seek");
+        LOGE("seek frame failed, ret=%d", ret);
         avformat_close_input(&ifmt_ctx);
         avformat_free_context(ofmt_ctx);
         return ret;
@@ -487,20 +488,12 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
             sizeof(int64_t) * ifmt_ctx->nb_streams));
     memset(pts_start_from, 0, sizeof(int64_t) * ifmt_ctx->nb_streams);
 
-
     while (1) {
         AVStream *in_stream, *out_stream;
 
         ret = av_read_frame(ifmt_ctx, &pkt);
-        if (ret < 0) {
-            avformat_close_input(&ifmt_ctx);
+        if (ret < 0) break;
 
-            if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
-                avio_closep(&ofmt_ctx->pb);
-            avformat_free_context(ofmt_ctx);
-
-            break;
-        }
         in_stream  = ifmt_ctx->streams[pkt.stream_index];
         out_stream = ofmt_ctx->streams[pkt.stream_index];
 
