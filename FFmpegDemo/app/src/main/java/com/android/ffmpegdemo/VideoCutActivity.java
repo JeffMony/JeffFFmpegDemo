@@ -8,8 +8,9 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.jeffmony.ffmpeglib.VideoProcessor;
+import com.jeffmony.ffmpeglib.VideoProcessManager;
 import com.jeffmony.ffmpeglib.LogUtils;
+import com.jeffmony.ffmpeglib.listener.IVideoCutListener;
 
 public class VideoCutActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -39,8 +40,8 @@ public class VideoCutActivity extends AppCompatActivity implements View.OnClickL
     private void doCutVideo() {
         String srcPath = mSrcPathTxt.getText().toString();
         String destPath = mDestPathTxt.getText().toString();
-        double start = 0;
-        double end = 0;
+        double start;
+        double end;
         try {
             start = Double.parseDouble(mStartTxt.getText().toString());
             end = Double.parseDouble(mEndTxt.getText().toString());
@@ -49,9 +50,17 @@ public class VideoCutActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        VideoProcessor processor = new VideoProcessor();
-        processor.cutVideo(start, end, srcPath, destPath);
+        VideoProcessManager.getInstance().cutVideo(start, end, srcPath, destPath, new IVideoCutListener() {
+            @Override
+            public void onVideoCutFailed(Exception e) {
 
+            }
+
+            @Override
+            public void onVideoCutFinised() {
+
+            }
+        });
     }
 
     @Override

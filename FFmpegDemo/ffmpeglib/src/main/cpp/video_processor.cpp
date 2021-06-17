@@ -394,8 +394,7 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_transformVideo(JNIEnv *env, jobject t
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, jdouble start,
-                                                    jdouble end, jstring input_path,
-                                                    jstring output_path) {
+                                                    jdouble end, jstring input_path, jstring output_path) {
     if (use_log_report) {
         av_log_set_callback(ffp_log_callback_report);
     } else {
@@ -409,39 +408,66 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
     AVFormatContext *ifmt_ctx = NULL, *ofmt_ctx = NULL;
     AVOutputFormat *ofmt = NULL;
     AVPacket pkt;
+    int *stream_mapping = NULL;
+    int stream_mapping_size;
+    int64_t last_dts = 0;
+    int stream_index = 0;
+    int ret, i;
 
-    int ret;
-    int i;
-
-    if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
+    if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, &ffmpeg_options)) < 0) {
         LOGE("Cannot open input file");
         avformat_close_input(&ifmt_ctx);
         return ret;
     }
 
-    if ((ret = avformat_find_stream_info(ifmt_ctx, NULL)) < 0) {
+    if ((ret = avformat_find_stream_info(ifmt_ctx, &ffmpeg_options)) < 0) {
         LOGE("Cannot find input file stream info");
         avformat_close_input(&ifmt_ctx);
         return ret;
     }
+
+    av_dump_format(ifmt_ctx, 1, in_filename, 0);
 
     avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, out_filename);
 
     if (!ofmt_ctx) {
         LOGE("Cannot alloc output file ctx");
         avformat_close_input(&ifmt_ctx);
-        return AVERROR_UNKNOWN;
+        avformat_free_context(ofmt_ctx);
+        return ERR_ALLOC_OUTPUT_CTX;
     }
 
-    ofmt = ofmt_ctx->oformat;
+    stream_mapping_size = ifmt_ctx->nb_streams;
+    stream_mapping = (int *) av_mallocz_array(stream_mapping_size, sizeof(*stream_mapping));
+    if (!stream_mapping) {
+        LOGE("Could not alloc stream mapping\n");
+        avformat_close_input(&ifmt_ctx);
+        avformat_free_context(ofmt_ctx);
+        av_freep(&stream_mapping);
+        return ERR_MALLOC_MAPPING;
+    }
+
+    ofmt_ctx->oformat->flags |= AVFMT_TS_NONSTRICT;
+    ofmt_ctx->oformat->flags |= AVFMT_NODIMENSIONS;
 
     for (i = 0; i < ifmt_ctx->nb_streams; i++) {
         AVStream *in_stream = ifmt_ctx->streams[i];
+        AVCodecParameters *in_codecpar = in_stream->codecpar;
+        if (in_codecpar->codec_type != AVMEDIA_TYPE_AUDIO &&
+        in_codecpar->codec_type != AVMEDIA_TYPE_VIDEO &&
+        in_codecpar->codec_type != AVMEDIA_TYPE_SUBTITLE) {
+            stream_mapping[i] = -1;
+            continue;
+        }
+
+        stream_mapping[i]= stream_index++;
+
         AVStream *out_stream = avformat_new_stream(ofmt_ctx, NULL);
         if (!out_stream) {
             LOGE("Failed allocating output stream");
             avformat_close_input(&ifmt_ctx);
             avformat_free_context(ofmt_ctx);
+            av_freep(&stream_mapping);
             return AVERROR_UNKNOWN;
         }
 
@@ -450,10 +476,13 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
             LOGE("Failed to copy context from input to output stream codec context");
             avformat_close_input(&ifmt_ctx);
             avformat_free_context(ofmt_ctx);
+            av_freep(&stream_mapping);
             return ret;
         }
         out_stream->codecpar->codec_tag = 0;
     }
+
+    ofmt = ofmt_ctx->oformat;
 
     if (!(ofmt->flags & AVFMT_NOFILE)) {
         ret = avio_open(&ofmt_ctx->pb, out_filename, AVIO_FLAG_WRITE);
@@ -461,15 +490,17 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
             LOGE("Could not open output file '%s'", out_filename);
             avformat_close_input(&ifmt_ctx);
             avformat_free_context(ofmt_ctx);
+            av_freep(&stream_mapping);
             return ret;
         }
     }
 
-    ret = avformat_write_header(ofmt_ctx, NULL);
+    ret = avformat_write_header(ofmt_ctx, &ffmpeg_options);
     if (ret < 0) {
         LOGE("Error occurred when opening output file");
         avformat_close_input(&ifmt_ctx);
         avformat_free_context(ofmt_ctx);
+        av_freep(&stream_mapping);
         return ret;
     }
 
@@ -478,14 +509,13 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
         LOGE("seek frame failed, ret=%d", ret);
         avformat_close_input(&ifmt_ctx);
         avformat_free_context(ofmt_ctx);
+        av_freep(&stream_mapping);
         return ret;
     }
 
-    int64_t *dts_start_from = static_cast<int64_t *>(malloc(
-            sizeof(int64_t) * ifmt_ctx->nb_streams));
+    int64_t *dts_start_from = static_cast<int64_t *>(malloc(sizeof(int64_t) * ifmt_ctx->nb_streams));
     memset(dts_start_from, 0, sizeof(int64_t) * ifmt_ctx->nb_streams);
-    int64_t *pts_start_from = static_cast<int64_t *>(malloc(
-            sizeof(int64_t) * ifmt_ctx->nb_streams));
+    int64_t *pts_start_from = static_cast<int64_t *>(malloc(sizeof(int64_t) * ifmt_ctx->nb_streams));
     memset(pts_start_from, 0, sizeof(int64_t) * ifmt_ctx->nb_streams);
 
     while (1) {
@@ -495,7 +525,34 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
         if (ret < 0) break;
 
         in_stream  = ifmt_ctx->streams[pkt.stream_index];
+        if (pkt.stream_index >= stream_mapping_size || stream_mapping[pkt.stream_index] < 0) {
+            av_packet_unref(&pkt);
+            continue;
+        }
+        pkt.stream_index = stream_mapping[pkt.stream_index];
         out_stream = ofmt_ctx->streams[pkt.stream_index];
+
+        if (pkt.pts == AV_NOPTS_VALUE) {
+            if (pkt.dts != AV_NOPTS_VALUE) {
+                pkt.pts = pkt.dts;
+                last_dts = pkt.dts;
+            } else {
+                pkt.pts = last_dts + 1;
+                pkt.dts = pkt.pts;
+                last_dts = pkt.pts;
+            }
+        } else {
+            if (pkt.dts != AV_NOPTS_VALUE) {
+                last_dts = pkt.dts;
+            } else {
+                pkt.dts = pkt.pts;
+                last_dts = pkt.dts;
+            }
+        }
+
+        if (pkt.pts < pkt.dts) {
+            pkt.pts = pkt.dts;
+        }
 
         if (av_q2d(in_stream->time_base) * pkt.pts > end_s) {
             av_packet_unref(&pkt);
@@ -513,29 +570,28 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
 
         /* copy packet */
         pkt.pts = av_rescale_q_rnd(pkt.pts - pts_start_from[pkt.stream_index], in_stream->time_base, out_stream->time_base,
-                                   static_cast<AVRounding>(AV_ROUND_NEAR_INF |
-                                                           AV_ROUND_PASS_MINMAX));
+                                   static_cast<AVRounding>(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
         pkt.dts = av_rescale_q_rnd(pkt.dts - dts_start_from[pkt.stream_index], in_stream->time_base, out_stream->time_base,
-                                   static_cast<AVRounding>(AV_ROUND_NEAR_INF |
-                                                           AV_ROUND_PASS_MINMAX));
-        if (pkt.pts < 0) {
-            pkt.pts = 0;
-        }
-        if (pkt.dts < 0) {
-            pkt.dts = 0;
-        }
+                                   static_cast<AVRounding>(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
         pkt.duration = (int)av_rescale_q((int64_t)pkt.duration, in_stream->time_base, out_stream->time_base);
         pkt.pos = -1;
 
+        if (pkt.pts < pkt.dts) {
+            pkt.pts = pkt.dts;
+        }
+
         ret = av_interleaved_write_frame(ofmt_ctx, &pkt);
         if (ret < 0) {
-            LOGE("Error muxing packet");
+            LOGE("Error muxing packet\n");
             avformat_close_input(&ifmt_ctx);
-
+            /* close output */
             if (ofmt_ctx && !(ofmt->flags & AVFMT_NOFILE))
                 avio_closep(&ofmt_ctx->pb);
             avformat_free_context(ofmt_ctx);
-            break;
+            av_freep(&stream_mapping);
+            free(dts_start_from);
+            free(pts_start_from);
+            return ret;
         }
         av_packet_unref(&pkt);
     }

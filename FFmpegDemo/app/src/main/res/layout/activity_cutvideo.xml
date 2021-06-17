@@ -11,6 +11,7 @@
 
         <EditText
             android:id="@+id/src_path_txt"
+            android:text="/sdcard/下载/hello.mp4"
             android:hint="请输入原文件"
             android:layout_width="match_parent"
             android:layout_height="100dp" />
@@ -18,12 +19,14 @@
         <EditText
             android:id="@+id/video_start_txt"
             android:hint="请输入起始时间"
+            android:text="2"
             android:layout_width="150dp"
             android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/video_end_txt"
             android:hint="请输入结束时间"
+            android:text="20"
             android:layout_width="150dp"
             android:layout_height="wrap_content" />
 
@@ -37,6 +40,7 @@
         <EditText
             android:id="@+id/dest_path_txt"
             android:hint="请输入目标文件"
+            android:text="/sdcard/下载/output.mp4"
             android:layout_width="match_parent"
             android:layout_height="100dp" />
         

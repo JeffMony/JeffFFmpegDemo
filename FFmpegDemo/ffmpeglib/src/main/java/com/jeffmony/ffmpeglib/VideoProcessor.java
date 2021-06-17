@@ -9,17 +9,29 @@ public class VideoProcessor {
 
     private IVideoTransformProgressListener mListener;
 
-    static {
-        System.loadLibrary("jeffmony");
-        System.loadLibrary("avcodec");
-        System.loadLibrary("avfilter");
-        System.loadLibrary("avformat");
-        System.loadLibrary("avutil");
-        System.loadLibrary("postproc");
-        System.loadLibrary("swresample");
-        System.loadLibrary("swscale");
+    private static volatile boolean mIsLibLoaded = false;
 
-        initFFmpegOptions();
+    public static void loadLibrariesOnce() {
+        synchronized (VideoProcessor.class) {
+            if (!mIsLibLoaded) {
+                System.loadLibrary("avcodec");
+                System.loadLibrary("avfilter");
+                System.loadLibrary("avformat");
+                System.loadLibrary("avutil");
+                System.loadLibrary("postproc");
+                System.loadLibrary("swresample");
+                System.loadLibrary("swscale");
+                System.loadLibrary("jeffmony");
+
+                initFFmpegOptions();
+
+                mIsLibLoaded = true;
+            }
+        }
+    }
+
+    public VideoProcessor() {
+        loadLibrariesOnce();
     }
 
     //初始化设置ffmpeg options
