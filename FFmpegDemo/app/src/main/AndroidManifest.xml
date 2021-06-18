@@ -26,6 +26,7 @@
         <activity android:name=".FFmpegCmdActivity" />
         <activity android:name=".VideoInfoActivity" />
         <activity android:name=".VideoCutActivity" />
+        <activity android:name=".VideoSplitStreamActivity" />
     </application>
 
 </manifest>

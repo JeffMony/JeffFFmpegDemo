@@ -18,7 +18,7 @@
             android:layout_height="50dp" />
 
         <Button
-            android:id="@+id/remux_btn"
+            android:id="@+id/transform_btn"
             android:text="修改封装格式"
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -54,8 +54,15 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/ffmpeg_cut_video_btn"
+            android:id="@+id/cut_video_btn"
             android:text="截取一段视频"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        
+        <Button
+            android:id="@+id/split_stream_btn"
+            android:text="分离音视频"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="50dp" />

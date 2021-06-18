@@ -11,10 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mFFmpegInfoBtn;
-    private Button mRemuxBtn;
+    private Button mTransformBtn;
     private Button mVideoInfoBtn;
     private Button mFFmpegCmdBtn;
     private Button mCutVideoBtn;
+    private Button mSplitStreamBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,17 +23,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         mFFmpegInfoBtn = findViewById(R.id.ffmpeg_info_btn);
-        mRemuxBtn = findViewById(R.id.remux_btn);
+        mTransformBtn = findViewById(R.id.transform_btn);
         mVideoInfoBtn = findViewById(R.id.info_btn);
         mFFmpegCmdBtn = findViewById(R.id.ffmpeg_cmd_btn);
-        mVideoInfoBtn = findViewById(R.id.info_btn);
-        mCutVideoBtn = findViewById(R.id.ffmpeg_cut_video_btn);
+        mCutVideoBtn = findViewById(R.id.cut_video_btn);
+        mSplitStreamBtn = findViewById(R.id.split_stream_btn);
 
         mFFmpegInfoBtn.setOnClickListener(this);
-        mRemuxBtn.setOnClickListener(this);
+        mTransformBtn.setOnClickListener(this);
         mVideoInfoBtn.setOnClickListener(this);
         mFFmpegCmdBtn.setOnClickListener(this);
         mCutVideoBtn.setOnClickListener(this);
+        mSplitStreamBtn.setOnClickListener(this);
     }
 
     @Override
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == mFFmpegInfoBtn) {
             Intent intent = new Intent(this, FFmpegInfoActivity.class);
             startActivity(intent);
-        } else if (v == mRemuxBtn) {
+        } else if (v == mTransformBtn) {
             Intent intent = new Intent(this, VideoTransformActivity.class);
             startActivity(intent);
         } else if (v == mVideoInfoBtn) {
@@ -54,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         } else if (v == mCutVideoBtn) {
             Intent intent = new Intent(this, VideoCutActivity.class);
+            startActivity(intent);
+        } else if (v == mSplitStreamBtn) {
+            Intent intent = new Intent(this, VideoSplitStreamActivity.class);
             startActivity(intent);
         }
     }
