@@ -1,3 +1,0 @@
-include ':ffmpeglib'
-include ':app'
-rootProject.name = 'JeffFFmpegDemo'
