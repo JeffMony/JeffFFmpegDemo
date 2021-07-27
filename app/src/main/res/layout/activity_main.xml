@@ -66,7 +66,27 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/multi_video_merge_btn"
+            android:text="多个MP4视频合成一个视频"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/reverse_video_btn"
+            android:text="生成倒播的视频"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
     </LinearLayout>
 
 </LinearLayout>

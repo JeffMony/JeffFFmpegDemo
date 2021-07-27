@@ -6,6 +6,8 @@
 #include <string>
 #include <complex.h>
 
+#include "video_composite.h"
+
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
@@ -26,6 +28,11 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_initFFmpegOptions(JNIEnv *env, jclass
     //初始化的时候设置options,可以解决av_dict_set导致的NE问题
     av_dict_set(&ffmpeg_options, PROTOCOL_OPTION_KEY, PROTOCOL_OPTION_VALUE, 0);
     av_dict_set(&ffmpeg_options, FORMAT_EXTENSION_KEY, FORMAT_EXTENSION_VALUE, 0);
+    if (use_log_report) {
+        av_log_set_callback(ffp_log_callback_report);
+    } else {
+        av_log_set_callback(ffp_log_callback_brief);
+    }
     LOGI("initFFmpegOptions");
 }
 
@@ -33,11 +40,6 @@ extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_jeffmony_ffmpeglib_VideoProcessor_getVideoInfo(JNIEnv *env, jobject thiz,
                                                         jstring input_path) {
-    if (use_log_report) {
-        av_log_set_callback(ffp_log_callback_report);
-    } else {
-        av_log_set_callback(ffp_log_callback_brief);
-    }
     const char *in_filename = env->GetStringUTFChars(input_path, JNI_FALSE);
     AVFormatContext *ifmt_ctx = NULL;
     int ret;
@@ -59,7 +61,6 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_getVideoInfo(JNIEnv *env, jobject thi
         LOGE("avformat_find_stream_info failed, ret=%d", ret);
         return NULL;
     }
-    LOGE("3");
     duration = ifmt_ctx->duration;
 
     for (i = 0; i < ifmt_ctx->nb_streams; i++) {
@@ -168,11 +169,6 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_com_jeffmony_ffmpeglib_VideoProcessor_transformVideo(JNIEnv *env, jobject thiz, jstring input_path,
                                                           jstring output_path) {
-    if (use_log_report) {
-        av_log_set_callback(ffp_log_callback_report);
-    } else {
-        av_log_set_callback(ffp_log_callback_brief);
-    }
     const char *in_filename = env->GetStringUTFChars(input_path, 0);
     const char *out_filename = env->GetStringUTFChars(output_path, 0);
     LOGI("Input_path=%s, Output_path=%s", in_filename, out_filename);
@@ -396,11 +392,6 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, jdouble start,
                                                     jdouble end, jstring input_path, jstring output_path) {
-    if (use_log_report) {
-        av_log_set_callback(ffp_log_callback_report);
-    } else {
-        av_log_set_callback(ffp_log_callback_brief);
-    }
     const char *in_filename = env->GetStringUTFChars(input_path, 0);
     const char *out_filename = env->GetStringUTFChars(output_path, 0);
     double start_s = start;
@@ -607,4 +598,38 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_cutVideo(JNIEnv *env, jobject thiz, j
         avio_closep(&ofmt_ctx->pb);
     avformat_free_context(ofmt_ctx);
     return 1;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_jeffmony_ffmpeglib_VideoProcessor_compositeVideos(JNIEnv *env, jobject thiz,
+                                                           jstring output_video_path,
+                                                           jobject videos, jobject listener) {
+    auto clazz = env->GetObjectClass(videos);
+    int size = env->CallIntMethod(videos, env->GetMethodID(clazz, "size", "()I"));
+    auto input_video_paths = new char*[size];
+    for (int i = 0; i < size; i++) {
+        auto item_video = env->CallObjectMethod(videos, env->GetMethodID(clazz, "get", "(I)Ljava/lang/Object;"), i);
+        auto item = (jstring) item_video;
+        auto path = env->GetStringUTFChars(item, JNI_FALSE);
+        auto len = strlen(path) + 1;
+        auto input = new char[len];
+
+        //C 库函数 int snprintf(char *str, size_t size, const char *format, ...) 设将可变参数(...)按照 format 格式化成字符串，并将字符串复制到 str 中，size 为要写入的字符的最大数目，超过 size 会被截断。
+        snprintf(input, len, "%s%c", path, 0);
+        input_video_paths[i] = input;
+
+        env->ReleaseStringUTFChars(item, path);
+    }
+    env->DeleteLocalRef(clazz);
+
+    auto output_path = env->GetStringUTFChars(output_video_path, JNI_FALSE);
+
+    auto video_composite = new VideoComposite();
+
+    //开始执行合成动作
+    int ret = video_composite->StartComposite(output_path, input_video_paths, size, listener);
+
+    env->ReleaseStringUTFChars(output_video_path, output_path);
+    return ret;
 }

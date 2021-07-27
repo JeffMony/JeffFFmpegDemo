@@ -3,7 +3,10 @@ package com.jeffmony.ffmpeglib;
 import androidx.annotation.NonNull;
 
 import com.jeffmony.ffmpeglib.listener.IVideoTransformProgressListener;
+import com.jeffmony.ffmpeglib.listener.OnVideoCompositeListener;
 import com.jeffmony.ffmpeglib.model.VideoInfo;
+
+import java.util.List;
 
 public class VideoProcessor {
 
@@ -56,4 +59,7 @@ public class VideoProcessor {
 
     //剪切视频长度
     public native int cutVideo(double start, double end, String inputPath, String outputPath);
+
+    //将多个MP4视频合成为一个视频
+    public native int compositeVideos(String outputVideoPath, List<String> videos, OnVideoCompositeListener listener);
 }

@@ -53,7 +53,11 @@ add_library( # Sets the name of the library.
         fftools_cmdutils.c
         ffmpeg_cmd.cpp
         ffmpeg_info.cpp
-        video_processor.cpp)
+        jeffmony_log.h
+        video_jni_env.cpp
+        video_jni.cpp
+        video_processor.cpp
+        video_composite.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

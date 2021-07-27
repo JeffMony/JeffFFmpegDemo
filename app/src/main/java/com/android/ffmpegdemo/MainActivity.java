@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mFFmpegCmdBtn;
     private Button mCutVideoBtn;
     private Button mSplitStreamBtn;
+    private Button mMultiVideoMergeBtn;
+    private Button mReverseVideoBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFFmpegCmdBtn = findViewById(R.id.ffmpeg_cmd_btn);
         mCutVideoBtn = findViewById(R.id.cut_video_btn);
         mSplitStreamBtn = findViewById(R.id.split_stream_btn);
+        mMultiVideoMergeBtn = findViewById(R.id.multi_video_merge_btn);
+        mReverseVideoBtn = findViewById(R.id.reverse_video_btn);
 
         mFFmpegInfoBtn.setOnClickListener(this);
         mTransformBtn.setOnClickListener(this);
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFFmpegCmdBtn.setOnClickListener(this);
         mCutVideoBtn.setOnClickListener(this);
         mSplitStreamBtn.setOnClickListener(this);
+        mMultiVideoMergeBtn.setOnClickListener(this);
+        mReverseVideoBtn.setOnClickListener(this);
 
         requestPermissions();
     }
@@ -91,6 +97,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == mSplitStreamBtn) {
             Intent intent = new Intent(this, VideoSplitStreamActivity.class);
             startActivity(intent);
+        } else if (v == mMultiVideoMergeBtn) {
+            Intent intent = new Intent(this, MultiVideoMergeActivity.class);
+            startActivity(intent);
+        } else if (v == mReverseVideoBtn) {
+
         }
     }
 }

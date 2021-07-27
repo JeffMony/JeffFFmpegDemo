@@ -27,6 +27,7 @@
         <activity android:name=".VideoInfoActivity" />
         <activity android:name=".VideoCutActivity" />
         <activity android:name=".VideoSplitStreamActivity" />
+        <activity android:name=".MultiVideoMergeActivity" />
     </application>
 
 </manifest>

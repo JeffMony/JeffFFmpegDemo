@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:textColor="@color/colorPrimaryDark"
+        android:text="请输入源文件路径"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/src_path_txt1"
+        android:text="/sdcard/DCIM/Camera/VID_20210716_162906.mp4"
+        android:hint="请输入原文件1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <TextView
+        android:textColor="@color/colorPrimaryDark"
+        android:text="请输入源文件路径"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/src_path_txt2"
+        android:text="/sdcard/DCIM/Camera/VID_20210716_162935.mp4"
+        android:hint="请输入原文件2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <TextView
+        android:textColor="@color/colorPrimaryDark"
+        android:text="请输入源文件路径"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/src_path_txt3"
+        android:text="/sdcard/DCIM/Camera/VID_20210716_163205.mp4"
+        android:hint="请输入原文件3"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <Button
+        android:id="@+id/merge_btn"
+        android:layout_gravity="center"
+        android:text="合成一个视频"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <EditText
+        android:hint="请输入生成的视频"
+        android:text="/sdcard/DCIM/Camera/output.mp4"
+        android:id="@+id/output_video_txt"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+
+</LinearLayout>
