@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.jeffmony.ffmpeglib.LogUtils;
 import com.jeffmony.ffmpeglib.VideoProcessor;
 import com.jeffmony.ffmpeglib.listener.OnVideoCompositeListener;
 
@@ -58,12 +59,25 @@ public class MultiVideoMergeActivity extends AppCompatActivity implements View.O
         videoProcessor.compositeVideos(outputVideoPath, inputVideos, new OnVideoCompositeListener() {
             @Override
             public void onComplete() {
+                LogUtils.i(TAG, "compositeVideos finish");
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MultiVideoMergeActivity.this, "合并视频成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void onError(int errCode) {
-
+                LogUtils.e(TAG, "compositeVideos onError : " + errCode);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MultiVideoMergeActivity.this, "合并视频失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

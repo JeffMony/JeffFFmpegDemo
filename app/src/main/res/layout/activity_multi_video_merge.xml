@@ -13,7 +13,7 @@
 
     <EditText
         android:id="@+id/src_path_txt1"
-        android:text="/sdcard/DCIM/Camera/VID_20210716_162906.mp4"
+        android:text="/sdcard/DCIM/Camera/input1.mp4"
         android:hint="请输入原文件1"
         android:layout_width="match_parent"
         android:layout_height="100dp" />
@@ -26,7 +26,7 @@
 
     <EditText
         android:id="@+id/src_path_txt2"
-        android:text="/sdcard/DCIM/Camera/VID_20210716_162935.mp4"
+        android:text="/sdcard/DCIM/Camera/input2.mp4"
         android:hint="请输入原文件2"
         android:layout_width="match_parent"
         android:layout_height="100dp" />
@@ -39,7 +39,7 @@
 
     <EditText
         android:id="@+id/src_path_txt3"
-        android:text="/sdcard/DCIM/Camera/VID_20210716_163205.mp4"
+        android:text="/sdcard/DCIM/Camera/input3.mp4"
         android:hint="请输入原文件3"
         android:layout_width="match_parent"
         android:layout_height="100dp" />
