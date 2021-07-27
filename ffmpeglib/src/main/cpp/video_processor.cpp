@@ -26,6 +26,7 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_initFFmpegOptions(JNIEnv *env, jclass
     //初始化的时候设置options,可以解决av_dict_set导致的NE问题
     av_dict_set(&ffmpeg_options, PROTOCOL_OPTION_KEY, PROTOCOL_OPTION_VALUE, 0);
     av_dict_set(&ffmpeg_options, FORMAT_EXTENSION_KEY, FORMAT_EXTENSION_VALUE, 0);
+    LOGI("initFFmpegOptions");
 }
 
 extern "C"
@@ -37,7 +38,7 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_getVideoInfo(JNIEnv *env, jobject thi
     } else {
         av_log_set_callback(ffp_log_callback_brief);
     }
-    const char *in_filename = env->GetStringUTFChars(input_path, 0);
+    const char *in_filename = env->GetStringUTFChars(input_path, JNI_FALSE);
     AVFormatContext *ifmt_ctx = NULL;
     int ret;
     int i;
@@ -58,7 +59,7 @@ Java_com_jeffmony_ffmpeglib_VideoProcessor_getVideoInfo(JNIEnv *env, jobject thi
         LOGE("avformat_find_stream_info failed, ret=%d", ret);
         return NULL;
     }
-
+    LOGE("3");
     duration = ifmt_ctx->duration;
 
     for (i = 0; i < ifmt_ctx->nb_streams; i++) {
